@@ -10,6 +10,7 @@ require('./helpers/dbConnection');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const serviceRouter = require('./routes/service');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use(cors())
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api', serviceRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
