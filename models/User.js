@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     gender: {
         type: String,
         enum: ['Male', 'Female'],
-        required: true
+        required: false
     },
     role: {
         type: String,
