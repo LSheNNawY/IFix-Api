@@ -5,8 +5,8 @@ const ProfessionSchema = new mongoose.Schema(
         title: {
             type: String,
             required: [true, "title is required"],
-            minLength: 5,
-            maxLength: 20,
+            minLength: 3,
+            maxLength: 15,
         },
         services: [
             {
