@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
 const Profession = require('../models/Profession')
 
-
-
 /**
- * get all service function
+ * get all profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -21,7 +19,7 @@ const getAll = async (req, res) => {
 }
 
 /**
- * create service function
+ * create profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -40,12 +38,12 @@ const createProfession = async (req, res) => {
 }
 
 /**
- * search service function
+ * search profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
-const getById = async (req, res) => {
+const getProfessionById = async (req, res) => {
     try {
         const profession = await Profession.findOne({_id: req.params.id});
         if (profession) {
@@ -57,13 +55,13 @@ const getById = async (req, res) => {
 }
 
 /**
- * update service function
+ * update profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
 
-const getByIdAndUpdate = async (req, res) => {
+const updateProfession = async (req, res) => {
     try {
         const profession = await Profession.findOneAndUpdate({_id:req.params.id,},{$set:req.body},{new:true});
         if (profession) {
@@ -76,7 +74,7 @@ const getByIdAndUpdate = async (req, res) => {
 
 
 /**
- * delete service function
+ * delete profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -100,5 +98,5 @@ const deleteProfession = async (req, res) => {
 
 
 module.exports = {
-    getAll, createProfession, getById, getByIdAndUpdate, deleteProfession 
+    getAll, createProfession, getProfessionById, updateProfession, deleteProfession 
 }

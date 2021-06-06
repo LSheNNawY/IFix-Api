@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const {Schema} = require("mongoose");
+
 const ProfessionSchema = new mongoose.Schema(
     {
         title: {
