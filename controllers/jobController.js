@@ -23,4 +23,21 @@ const getAll = async(req,res) => {
     return res.status(400).send("fail")
   }
 }
-module.exports = {createJob,getAll};
+
+const deleteJob=async(req,res)=>{
+  
+  try{
+    const job = await Job.findById(req.params.id)
+    if(job){
+      await job.remove();
+      return res.status(200).json({message:'job deleted'})
+    }
+    return res.status(404).json({message:'error deleting job!'})
+  
+  }catch(err){
+    console.log(err)
+    return res.status(400).send("fail")
+
+  }
+}
+module.exports = {createJob,getAll,deleteJob};
