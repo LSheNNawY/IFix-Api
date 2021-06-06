@@ -5,15 +5,22 @@ const jobSchema = new mongoose.Schema(
     client: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    employee: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
     profession: {
       type: Schema.Types.ObjectId,
       ref: "Profession",
+      required: true,
     },
     warranty: {
       type: Number,
-      default: 1,
-      required: true,
+      default: 0,
+     
     },
     description: {
       type: String
@@ -30,6 +37,7 @@ const jobSchema = new mongoose.Schema(
     service: {
       type: Schema.Types.ObjectId,
       ref: "Service",
+      required:true
     },
     review: {
       rate: {
