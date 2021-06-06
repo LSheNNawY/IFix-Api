@@ -12,4 +12,15 @@ const createJob = async (req, res) => {
   }
  
 };
-module.exports = {createJob};
+
+const getAll = async(req,res) => {
+  try{
+   const job= await Job.find({}).populate('client').populate('employee').populate('profession').populate('service')
+   return res.status(200).json(job)
+
+  }catch(err){
+    console.log(err)
+    return res.status(400).send("fail")
+  }
+}
+module.exports = {createJob,getAll};
