@@ -52,8 +52,8 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    profession_id: {
-        type: Object,
+    profession: {
+        type: Schema.Types.ObjectId,
         ref: 'Profession'
     }
 
