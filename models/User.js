@@ -29,17 +29,11 @@ const userSchema = new mongoose.Schema({
         minLength: 6,
         required: [true, "Password is required"],
     },
-    gender: {
-        type: String,
-        enum: ['Male', 'Female'],
-        required: false
-    },
     role: {
         type: String,
         enum: ['admin', 'user', 'employee'],
         default: 'user'
-    }
-   
+    },
 
 }, {timestamps: {createdAt: 'created_at', updatedAt: false }});
 const User = mongoose.model('User', userSchema);

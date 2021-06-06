@@ -12,8 +12,8 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const serviceRouter = require('./routes/service');
 const professionRouter = require('./routes/profession');
-
-
+const jobsRouter=require('./routes/jobs');
+const userRouter = require('./routes/users');
 const app = express();
 
 // view engine setup
@@ -29,7 +29,8 @@ app.use(cors())
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/api', [serviceRouter,professionRouter]);
+app.use('/api', [serviceRouter,professionRouter,jobsRouter,userRouter]);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
