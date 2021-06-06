@@ -15,8 +15,17 @@ router.post('/users', async(req, res, next) => {
   await userController.createUser(req,res)
 });
 
+router.get('/users/:id', async(req, res, next) => {
+  await userController.getUserById(req, res);
+})
+
+router.put('/users/:id', async(req, res, next) => {
+  await userController.updateUser(req, res);
+})
+
 router.delete('/users/:id' , async(req, res, next) => {
   await userController.deleteUser(req,res)
 });
+
 
 module.exports = router;

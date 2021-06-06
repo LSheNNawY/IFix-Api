@@ -9,7 +9,6 @@ const cors = require('cors')
 require('./helpers/dbConnection');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const serviceRouter = require('./routes/service');
 const professionRouter = require('./routes/profession');
 const jobsRouter=require('./routes/jobs');
@@ -28,7 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/api', [serviceRouter,professionRouter,jobsRouter,userRouter]);
 
 

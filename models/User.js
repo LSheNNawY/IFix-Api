@@ -34,8 +34,30 @@ const userSchema = new mongoose.Schema({
         enum: ['admin', 'user', 'employee'],
         default: 'user'
     },
+    address: {
+        type: String,
+        required: [true, "Address is required"]
+    },
+    picture: {
+        type: String
+    },
+    date_of_birth: {
+        type: Date
+    },
+    active: {
+        type: Boolean,
+        default: false
+    },
+    rating: {
+        type: Number,
+        default: 0
+    },
+    profession_id: {
+        type: Object,
+        ref: 'Profession'
+    }
 
-}, {timestamps: {createdAt: 'created_at', updatedAt: false }});
+}, {timestamps: {createdAt: 'created_at', updatedAt: false}});
 const User = mongoose.model('User', userSchema);
 
 
