@@ -19,6 +19,6 @@ const ProfessionSchema = new mongoose.Schema(
     },
     {timestamps: {createdAt: "created_at", updatedAt: false}}
 );
-const Profession = mongoose.model(" Profession",  ProfessionSchema);
+const Profession = mongoose.model("Profession", ProfessionSchema);
 
-module.exports =  Profession;
+module.exports = Profession;
