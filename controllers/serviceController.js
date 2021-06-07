@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Service = require('../models/Service')
+const {Service,validateService} = require('../models/Service')
 
 
 
@@ -29,15 +29,21 @@ const getAllService = async (req, res) => {
  */
 const createService = async (req, res) => {
     const {body} = req;
+    const { error } = validateService(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
     try {
-        const newService = await Service.create(body);
-        if (newService) {
-            return res.status(200).send(newService);
+            const newService = await Service.create(body);
+            if (newService) {
+                return res.status(200).send(newService);
+            }
+        } catch (err) {
+            console.log(err)
+            return res.status(500).send(err);
         }
-    } catch (err) {
-        console.log(err)
-        return res.status(500).send(err);
-    }
+
+  
 }
 
 /**
@@ -65,6 +71,9 @@ const getServiceById = async (req, res) => {
  */
 
 const updateService = async (req, res) => {
+    const { error } = validateService(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
     try {
         const service = await Service.findOneAndUpdate({_id:req.params.id,},{$set:req.body},{new:true});
         if (service) {

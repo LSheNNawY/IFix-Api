@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const {Schema} = require("mongoose");
+const Joi = require('joi')
+
 const ServiceSchema = new mongoose.Schema(
     {
         title: {
@@ -24,5 +26,17 @@ const ServiceSchema = new mongoose.Schema(
     {timestamps: {createdAt: "created_at", updatedAt: false}}
 );
 const Service = mongoose.model("Service", ServiceSchema);
+function validateService(service) {
+    const schema = Joi.object({
+        title: Joi.string().min(5).max(15).required(),
+        description: Joi.string().min(10).required(),
+        price: Joi.number()
+    });
+    return schema.validate(service);
+}
 
-module.exports = Service;
+
+module.exports = {
+    Service,
+    validateService
+};
