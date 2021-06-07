@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const fs = require("fs");
+const jwt = require("jsonwebtoken");
 /**
  * get all users function
  * @param req
@@ -77,4 +79,59 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
-module.exports = { createUser, getAll, getUserById, updateUser, deleteUser };
+const login = async (req, res, next) => {
+  const { email, password } = req.body;
+  const data = {};
+  console.log(req.body);
+
+  try {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(401).json({ error: "invalid credentials" });
+    }
+    bcrypt.compare(password, user.password, (err, matched) => {
+      if (matched) {
+        data.userId = user.id;
+        data.username = user.firstname + " " + user.lastname;
+        data.email = user.email;
+        data.created_at = user.created_at;
+
+        const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
+        const expirationTime = new Date(
+          Date.now() + parseInt(process.env.JWT_EXPIRATION)
+        );
+
+        res.cookie("token", token, {
+          httpOnly: true,
+          expires: expirationTime,
+        });
+
+        res.cookie("email", data.email, {
+          httpOnly: true,
+          expires: expirationTime,
+        });
+
+        res.cookie("userId", data.userId, {
+          httpOnly: true,
+          expires: expirationTime,
+        });
+
+        return res.status(200).json({ ...data });
+      }
+      return res.status(401).json({ error: "Invalid credentials" });
+    });
+  } catch (err) {
+    res.status(401).json({
+      error: "Error logging you in, please try again later",
+    });
+  }
+};
+
+module.exports = {
+  createUser,
+  getAll,
+  getUserById,
+  updateUser,
+  deleteUser,
+  login,
+};
