@@ -30,6 +30,9 @@ const createUser = async (req, res, next) => {
     const user = await User.create(user_body);
     const salt = await bcrypt.genSalt(7);
     user.password = await bcrypt.hash(user.password, salt);
+    const email = user.email
+    user.email = email.toLowerCase();
+    // console.log(user.email)
     await user.save();
     return res.status(200).send("create user successfully");
   } catch (error) {
