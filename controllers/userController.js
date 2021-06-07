@@ -1,4 +1,11 @@
 const User = require("../models/User")
+const bcrypt = require('bcrypt')
+/**
+ * get all users function
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */ 
 
 const getAll = async(req,res,next) => {
     try{
@@ -11,10 +18,20 @@ const getAll = async(req,res,next) => {
     }
 } 
 
+/**
+ * register or create user function
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+
 const createUser = async(req,res,next) => {
-    const user = req.body;
+    const user_body = req.body;
     try{
-        await User.create(user);
+        const user = await User.create(user_body);
+        const salt = await bcrypt.genSalt(7);
+        user.password = await bcrypt.hash(user.password, salt);
+        await user.save();
         return res.status(200).send('create user successfully');
     }
     catch(error){
