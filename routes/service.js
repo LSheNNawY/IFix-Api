@@ -3,7 +3,7 @@ const express = require('express')
 const serviceRouter = express.Router();
 
 serviceRouter.get('/service', async function (req, res, next) {
-    await serviceController.getAll(req, res);
+    await serviceController.getAllService(req, res);
 });
 
 
@@ -12,11 +12,11 @@ serviceRouter.post('/service', async (req, res,next) => {
 });
 
 serviceRouter.get('/service/:id', async function (req, res, next) {
-    await serviceController.getById(req, res);
+    await serviceController.getServiceById(req, res);
 });
 
 serviceRouter.put('/service/:id', async function (req, res, next) {
-    await serviceController.getByIdAndUpdate(req, res);
+    await serviceController.updateService(req, res);
 });
 
 serviceRouter.delete('/service/:id', async function (req, res, next) {
