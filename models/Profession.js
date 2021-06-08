@@ -15,7 +15,7 @@ const ProfessionSchema = new mongoose.Schema(
             {
                 type: Schema.Types.ObjectId,
                 ref: "Service",
-                required:true
+                required:"true"
             },
         ],
     },

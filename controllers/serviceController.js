@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Service = require('../models/Service')
 
 
-
 /**
  * get all service function
  * @param req
@@ -64,7 +63,11 @@ const getById = async (req, res) => {
  * @returns {Promise<void>}
  */
 
-const getByIdAndUpdate = async (req, res) => {
+const getByIdAndUpdate = async (req, res) => {  
+    const { error } = validate(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message); 
+    
     try {
         const service = await Service.findOneAndUpdate({_id:req.params.id,},{$set:req.body},{new:true});
         if (service) {

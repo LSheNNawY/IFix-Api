@@ -65,7 +65,7 @@ const getProfessionById = async (req, res) => {
 
 const updateProfession = async (req, res) => {
     const { error } = validate(req.body);
-     
+
     if (error) return res.status(400).send(error.details[0].message); 
 
     try {
@@ -99,7 +99,6 @@ const deleteProfession = async (req, res) => {
         return res.status(500).json({error: err});
     }
 };
-
 
 
 
