@@ -21,7 +21,7 @@ const ProfessionSchema = new mongoose.Schema(
     },
     {timestamps: {createdAt: "created_at", updatedAt: false}}
 );
-const Profession = mongoose.model(" Profession",  ProfessionSchema);
+const Profession = mongoose.model("Profession", ProfessionSchema);
 
 function validateProfession(profession) {
     const schema = Joi.object({
@@ -34,4 +34,3 @@ function validateProfession(profession) {
 
 module.exports.Profession = Profession;
 module.exports.validate = validateProfession;
-
