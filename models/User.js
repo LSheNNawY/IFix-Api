@@ -57,12 +57,18 @@ const userSchema = new mongoose.Schema(
       default: 0,
     },
     profession: {
-      type: Schema.Types.ObjectId,
-      ref: "Profession",
+        type: Schema.Types.ObjectId,
+        ref: 'Profession'
     },
-  },
-  { timestamps: { createdAt: "created_at", updatedAt: false } }
-);
-const User = mongoose.model("User", userSchema);
+    jobs: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Job'
+        }
+    ]
+
+}, {timestamps: {createdAt: 'created_at', updatedAt: false}});
+const User = mongoose.model('User', userSchema);
+
 
 module.exports = User;
