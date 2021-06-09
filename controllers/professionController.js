@@ -8,6 +8,7 @@ const Profession = require('../models/Profession')
  * @returns {Promise<void>}
  */
 const getAll = async (req, res) => {
+
         try {
             const professions= await Profession.find({}).populate('services')
             return res.status(200).json(professions);
