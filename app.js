@@ -10,7 +10,7 @@ require('./helpers/dbConnection');
 
 const indexRouter = require('./routes/index');
 const professionRouter = require('./routes/profession');
-const jobsRouter=require('./routes/jobs');
+const jobsRouter = require('./routes/jobs');
 const userRouter = require('./routes/users');
 const app = express();
 
@@ -22,12 +22,16 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+
+app.use(cors({
+    origin: process.env.CLIENT_ORIGIN,
+    credentials: true
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(cors())
-app.use(express.static(path.join(__dirname,'uploads')))
 
 app.use('/', indexRouter);
-app.use('/api', [professionRouter,jobsRouter,userRouter]);
+app.use('/api', [professionRouter, jobsRouter, userRouter]);
 
 
 // catch 404 and forward to error handler
