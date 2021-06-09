@@ -7,7 +7,6 @@ professionRouter.get('/', function(req, res, next) {
     res.send('respond with a resource');
   });
 
-
 professionRouter.get('/professions', async function (req, res, next) {
     await professionController.getAll(req, res);
 });
