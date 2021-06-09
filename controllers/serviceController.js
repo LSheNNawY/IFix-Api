@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Service = require('../models/Service')
+const {Service,validateService} = require('../models/Service')
 
 
 
@@ -9,7 +9,7 @@ const Service = require('../models/Service')
  * @param res
  * @returns {Promise<void>}
  */
-const getAll = async (req, res) => {
+const getAllService = async (req, res) => {
         try {
             const services = await Service.find({});
             return res.status(200).json(services);
@@ -29,15 +29,21 @@ const getAll = async (req, res) => {
  */
 const createService = async (req, res) => {
     const {body} = req;
+    const { error } = validateService(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
+
     try {
-        const newService = await Service.create(body);
-        if (newService) {
-            return res.status(200).send(newService);
+            const newService = await Service.create(body);
+            if (newService) {
+                return res.status(200).send(newService);
+            }
+        } catch (err) {
+            console.log(err)
+            return res.status(500).send(err);
         }
-    } catch (err) {
-        console.log(err)
-        return res.status(500).send(err);
-    }
+
+  
 }
 
 /**
@@ -46,7 +52,7 @@ const createService = async (req, res) => {
  * @param res
  * @returns {Promise<void>}
  */
-const getById = async (req, res) => {
+const getServiceById = async (req, res) => {
     try {
         const service = await Service.findOne({_id: req.params.id});
         if (service) {
@@ -64,7 +70,10 @@ const getById = async (req, res) => {
  * @returns {Promise<void>}
  */
 
-const getByIdAndUpdate = async (req, res) => {
+const updateService = async (req, res) => {
+    const { error } = validateService(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
     try {
         const service = await Service.findOneAndUpdate({_id:req.params.id,},{$set:req.body},{new:true});
         if (service) {
@@ -88,7 +97,7 @@ const deleteService = async (req, res) => {
         const service = await Service.findById(req.params.id);
 
         if (service) {
-            await Service.remove();
+            await service.remove();
             return res.status(200).json({message: "service Deleted"});
         }
 
@@ -102,5 +111,5 @@ const deleteService = async (req, res) => {
 
 
 module.exports = {
-    getAll, createService, getById, getByIdAndUpdate, deleteService
+    getAllService, createService, getServiceById, updateService, deleteService
 }

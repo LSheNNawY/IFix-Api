@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
-const Profession = require('../models/Profession')
-
-
+const {Profession,validate} = require('../models/Profession')
 
 /**
- * get all service function
+ * get all profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -14,23 +12,25 @@ const getAll = async (req, res) => {
             const professions= await Profession.find({}).populate('services')
             return res.status(200).json(professions);
         } catch (err) {
-            console.log(err)
             return res.status(400).send({"message": "profession not found"});
         }
 
 }
 
 /**
- * create service function
+ * create profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
 const createProfession = async (req, res) => {
-    const {body} = req;
+    const { body } = req;
+    const { error } = validate(req.body);
+   
+    if (error) return res.status(400).send(error.details[0].message);  
+
     try {
         const newProfession = await Profession.create(body);
-        console.log(newProfession);
         if (newProfession) {
             return res.status(200).send(newProfession);
         }
@@ -40,12 +40,12 @@ const createProfession = async (req, res) => {
 }
 
 /**
- * search service function
+ * search profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
-const getById = async (req, res) => {
+const getProfessionById = async (req, res) => {
     try {
         const profession = await Profession.findOne({_id: req.params.id});
         if (profession) {
@@ -57,15 +57,19 @@ const getById = async (req, res) => {
 }
 
 /**
- * update service function
+ * update profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
 
-const getByIdAndUpdate = async (req, res) => {
+const updateProfession = async (req, res) => {
+    const { error } = validate(req.body);
+     
+    if (error) return res.status(400).send(error.details[0].message); 
+
     try {
-        const profession = await Profession.findOneAndUpdate({_id:req.params.id,},{$set:req.body},{new:true});
+        const profession = await Profession.findOneAndUpdate({_id:req.params.id},{$set:req.body},{new:true});
         if (profession) {
             res.send(profession);
         }
@@ -76,7 +80,7 @@ const getByIdAndUpdate = async (req, res) => {
 
 
 /**
- * delete service function
+ * delete profession function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -100,5 +104,5 @@ const deleteProfession = async (req, res) => {
 
 
 module.exports = {
-    getAll, createProfession, getById, getByIdAndUpdate, deleteProfession 
+    getAll, createProfession, getProfessionById, updateProfession, deleteProfession 
 }
