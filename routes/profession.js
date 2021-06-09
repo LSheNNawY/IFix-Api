@@ -1,7 +1,23 @@
 const professionController = require('../controllers/professionController')
 const express = require('express')
 const professionRouter = express.Router();
+const multer = require('multer');
 
+
+//multer
+const fileStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './public/uploads')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9 )+ ".png";
+        cb(null, file.fieldname + '-' + uniqueSuffix  )
+    }
+})
+
+
+
+const upload = multer({storage:fileStorage})
 
 professionRouter.get('/', function(req, res, next) {
     res.send('respond with a resource');
@@ -11,7 +27,10 @@ professionRouter.get('/professions', async function (req, res, next) {
     await professionController.getAll(req, res);
 });
 
-professionRouter.post('/professions', async (req, res,next) => {
+professionRouter.post('/professions',upload.single("img"), async (req, res,next) => {
+   console.log(req.file)
+    console.log(req.body)
+
     await professionController.createProfession(req, res);
 });
 
