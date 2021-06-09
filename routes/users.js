@@ -8,7 +8,7 @@ const auth = require("../helpers/auth");
 
 const storage = multer.diskStorage({
   destination: (req, file, callBack) => {
-    callBack(null, "uploads");
+    callBack(null, "./public/uploads/users");
   },
   filename: (req, file, callBack) => {
     callBack(null, Date.now() + "-" + file.originalname);
@@ -16,7 +16,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
+router.post("/users", upload.single("picture"), async (req, res) => {
+  await userController.createUser(req, res);
+});
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
@@ -26,9 +28,6 @@ router.get("/users", async (req, res, next) => {
   await userController.getAll(req, res);
 });
 
-router.post("/users", upload.single("file"), async (req, res, next) => {
-  await userController.createUser(req, res);
-});
 
 router.post("/users/login", async (req, res, next) => {
   await userController.login(req, res);

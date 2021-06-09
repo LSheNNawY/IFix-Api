@@ -26,22 +26,56 @@ const getAll = async (req, res, next) => {
  * @returns {Promise<void>}
  */
 
-const createUser = async (req, res, next) => {
-  const user_body = req.body;
+const createUser = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    phone,
+    address,
+    dateOfBirth,
+    profession,
+  } = req.body;
+  const picture = req.file.originalname;
+
+  const salt = await bcrypt.genSalt();
+  const passwordHash = await bcrypt.hash(password, salt);
+
+  const newUser = new User({
+    firstName,
+    lastName,
+    email,
+    passwordHash,
+    phone,
+    address,
+    dateOfBirth,
+    profession,
+    picture,
+  });
   try {
-    const user = await User.create(user_body);
-    const salt = await bcrypt.genSalt(7);
-    user.password = await bcrypt.hash(user.password, salt);
-    const email = user.email
-    user.email = email.toLowerCase();
-    // console.log(user.email)
-    await user.save();
-    return res.status(200).send("create user successfully");
+    await newUser.save();
   } catch (error) {
-    console.log(error);
-    return res.status(400).send("error in create user");
+    console.error(error);
   }
 };
+
+// const createUser = async (req, res, next) => {
+//   const user_body = req.body;
+//   try {
+//     const user = await User.create(user_body);
+//     const salt = await bcrypt.genSalt(7);
+//     user.password = await bcrypt.hash(user.password, salt);
+//     const email = user.email
+//     user.email = email.toLowerCase();
+//     // console.log(user.email)
+//     await user.save();
+//     return res.status(200).send("create user successfully");
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(400).send("error in create user");
+//   }
+// };
 
 const getUserById = async (req, res, next) => {
   const id = req.params.id.toString();
@@ -89,7 +123,7 @@ const login = async (req, res, next) => {
     if (!user) {
       return res.status(401).json({ error: "invalid credentials" });
     }
-    bcrypt.compare(password, user.password, (err, matched) => {
+    bcrypt.compare(password, user.passwordHash, (err, matched) => {
       if (matched) {
         data.userId = user.id;
         data.username = user.firstname + " " + user.lastname;
