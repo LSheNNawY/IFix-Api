@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const Profession = require('../models/Profession')
+const Profession = require('../models/Profession');
+const multer= require('multer');
 
 /**
  * get all profession function
@@ -7,6 +8,7 @@ const Profession = require('../models/Profession')
  * @param res
  * @returns {Promise<void>}
  */
+
 const getAll = async (req, res) => {
 
         try {
@@ -25,6 +27,7 @@ const getAll = async (req, res) => {
  * @returns {Promise<void>}
  */
 const createProfession = async (req, res) => {
+    if(req.file) req.body.img=req.file.filename
     const { body } = req;
     // const { error } = validate(req.body);
     //

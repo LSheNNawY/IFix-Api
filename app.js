@@ -24,6 +24,7 @@ app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors())
+app.use(express.static(path.join(__dirname,'uploads')))
 
 app.use('/', indexRouter);
 app.use('/api', [professionRouter,jobsRouter,userRouter]);
@@ -33,6 +34,7 @@ app.use('/api', [professionRouter,jobsRouter,userRouter]);
 app.use(function (req, res, next) {
     next(createError(404));
 });
+
 
 // error handler
 app.use(function (err, req, res, next) {
