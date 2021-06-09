@@ -13,12 +13,11 @@ const ServiceSchema = new mongoose.Schema(
         },
         description: {
             type: String,
-            required: [true,"description is required"],
-            minLength: 10,
-
+            required: [true, "description is required"],
+            minLength: 10
         },
         price: {
-            type:Number,
+            type: Number,
             default: 0
         }
 
