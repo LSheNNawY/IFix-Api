@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const {Profession, validate} = require('../models/Profession')
+const Profession = require('../models/Profession');
+const multer= require('multer');
 
 /**
  * get all profession function
@@ -7,6 +8,7 @@ const {Profession, validate} = require('../models/Profession')
  * @param res
  * @returns {Promise<void>}
  */
+
 const getAll = async (req, res) => {
     try {
         if (req.query.professions) {
@@ -30,10 +32,11 @@ const getAll = async (req, res) => {
  * @returns {Promise<void>}
  */
 const createProfession = async (req, res) => {
-    const {body} = req;
-    const {error} = validate(req.body);
-
-    if (error) return res.status(400).send(error.details[0].message);
+    if(req.file) req.body.img=req.file.filename
+    const { body } = req;
+    // const { error } = validate(req.body);
+    //
+    // if (error) return res.status(400).send(error.details[0].message);
 
     try {
         const newProfession = await Profession.create(body);
@@ -70,9 +73,9 @@ const getProfessionById = async (req, res) => {
  */
 
 const updateProfession = async (req, res) => {
-    const { error } = validate(req.body);
-
-    if (error) return res.status(400).send(error.details[0].message); 
+    // const { error } = validate(req.body);
+    //
+    // if (error) return res.status(400).send(error.details[0].message);
 
     try {
         const profession = await Profession.findOneAndUpdate({_id: req.params.id,}, {$set: req.body}, {new: true});
