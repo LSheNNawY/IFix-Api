@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {Profession,validate} = require('../models/Profession')
+const {Profession, validate} = require('../models/Profession')
 
 /**
  * get all profession function
@@ -12,12 +12,10 @@ const getAll = async (req, res) => {
         if (req.query.professions) {
             const professions = await Profession.find({}).populate('services').limit(+req.query.professions)
             return res.status(200).json(professions);
-        } catch (err) {
-            return res.status(400).send({"message": "profession not found"});
+        } else {
+            const professions = await Profession.find({}).populate('services')
+            return res.status(200).json(professions);
         }
-
-        const professions = await Profession.find({}).populate('services')
-        return res.status(200).json(professions);
     } catch (err) {
         console.log(err)
         return res.status(400).send({"message": "profession not found"});
@@ -32,10 +30,10 @@ const getAll = async (req, res) => {
  * @returns {Promise<void>}
  */
 const createProfession = async (req, res) => {
-    const { body } = req;
-    const { error } = validate(req.body);
-   
-    if (error) return res.status(400).send(error.details[0].message);  
+    const {body} = req;
+    const {error} = validate(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
 
     try {
         const newProfession = await Profession.create(body);
@@ -72,9 +70,9 @@ const getProfessionById = async (req, res) => {
  */
 
 const updateProfession = async (req, res) => {
-    const { error } = validate(req.body);
-     
-    if (error) return res.status(400).send(error.details[0].message); 
+    const {error} = validate(req.body);
+
+    if (error) return res.status(400).send(error.details[0].message);
 
     try {
         const profession = await Profession.findOneAndUpdate({_id: req.params.id,}, {$set: req.body}, {new: true});
