@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {Profession,validate} = require('../models/Profession')
+const Profession = require('../models/Profession')
 
 /**
  * get all profession function
@@ -25,9 +25,9 @@ const getAll = async (req, res) => {
  */
 const createProfession = async (req, res) => {
     const { body } = req;
-    const { error } = validate(req.body);
-   
-    if (error) return res.status(400).send(error.details[0].message);  
+    // const { error } = validate(req.body);
+    //
+    // if (error) return res.status(400).send(error.details[0].message);
 
     try {
         const newProfession = await Profession.create(body);
@@ -64,9 +64,10 @@ const getProfessionById = async (req, res) => {
  */
 
 const updateProfession = async (req, res) => {
-    const { error } = validate(req.body);
-     
-    if (error) return res.status(400).send(error.details[0].message); 
+
+    // const { error } = validate(req.body);
+    //
+    // if (error) return res.status(400).send(error.details[0].message);
 
     try {
         const profession = await Profession.findOneAndUpdate({_id:req.params.id},{$set:req.body},{new:true});
