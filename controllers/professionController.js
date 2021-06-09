@@ -8,13 +8,18 @@ const Profession = require('../models/Profession')
  * @returns {Promise<void>}
  */
 const getAll = async (req, res) => {
-        try {
-            const professions= await Profession.find({}).populate('services')
+    try {
+        if (req.query.professions) {
+            const professions = await Profession.find({}).populate('services').limit(+req.query.professions)
             return res.status(200).json(professions);
-        } catch (err) {
-            console.log(err)
-            return res.status(400).send({"message": "profession not found"});
         }
+
+        const professions = await Profession.find({}).populate('services')
+        return res.status(200).json(professions);
+    } catch (err) {
+        console.log(err)
+        return res.status(400).send({"message": "profession not found"});
+    }
 
 }
 
@@ -63,7 +68,7 @@ const getProfessionById = async (req, res) => {
 
 const updateProfession = async (req, res) => {
     try {
-        const profession = await Profession.findOneAndUpdate({_id:req.params.id,},{$set:req.body},{new:true});
+        const profession = await Profession.findOneAndUpdate({_id: req.params.id,}, {$set: req.body}, {new: true});
         if (profession) {
             res.send(profession);
         }
@@ -95,8 +100,6 @@ const deleteProfession = async (req, res) => {
 };
 
 
-
-
 module.exports = {
-    getAll, createProfession, getProfessionById, updateProfession, deleteProfession 
+    getAll, createProfession, getProfessionById, updateProfession, deleteProfession
 }

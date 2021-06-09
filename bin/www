@@ -84,7 +84,7 @@ function onError(error) {
  */
 
 function onListening() {
-    console.log(`Server running on ${process.env.APP_URL}`)
+    console.log(`🚀 Server running on ${process.env.APP_URL}`)
     const addr = server.address();
     const bind = typeof addr === 'string'
         ? 'pipe ' + addr
