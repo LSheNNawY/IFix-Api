@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
 const userSchema = new mongoose.Schema(
   {
-    firstname: {
+    firstName: {
       type: String,
       required: [true, "First name is required"],
       minLength: 3,
       maxLength: 15,
     },
-    lastname: {
+    lastName: {
       type: String,
       required: [true, "Last name is required"],
       minLength: 3,
@@ -26,9 +26,9 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: [true, "Phone is required"],
-      match: [/\d{3}-\d{4}-\d{4}/, "Please fill a valid phone number"],
+      match: [/^01[0125][0-9]{8}$/gm, "Please fill a valid phone number"],
     },
-    password: {
+    passwordHash: {
       type: String,
       minLength: 6,
       required: [true, "Password is required"],
@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
     picture: {
       type: String,
     },
-    date_of_birth: {
+    dateOfBirth: {
       type: Date,
     },
     active: {
