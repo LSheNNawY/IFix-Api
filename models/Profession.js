@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const {Schema} = require("mongoose");
-const Joi = require('joi')
-Joi.objectId = require('joi-objectid')(Joi)
+// const Joi = require('joi')
+// Joi.objectId = require('joi-objectid')(Joi)
 
 const ProfessionSchema = new mongoose.Schema(
     {
@@ -11,28 +11,28 @@ const ProfessionSchema = new mongoose.Schema(
             minLength: 3,
             maxLength: 15
         },
-        // services: [
-        //     {
-        //         title: {
-        //             type: String,
-        //             required: [true, "title is required"],
-        //             minLength: 5,
-        //             maxLength: 20,
-        //             trim:true
-        //         },
-        //         description: {
-        //             type: String,
-        //             required: [true,"description is required"],
-        //             minLength: 10,
-        //
-        //         },
-        //         price: {
-        //             type:Number,
-        //             default: 0
-        //         }
-        //
-        //     },
-        // ],
+        services: [
+            {
+                title: {
+                    type: String,
+                    required: [true, "title is required"],
+                    minLength: 5,
+                    maxLength: 20,
+                    trim:true
+                },
+                description: {
+                    type: String,
+                    required: [true,"description is required"],
+                    minLength: 10,
+        
+                },
+                price: {
+                    type:Number,
+                    default: 0
+                }
+        
+            },
+        ],
         img: {
             type: String,
             required:true
