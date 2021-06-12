@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
+const userValidation = require("../helpers/userValidation");
 /**
  * get all users function
  * @param req
@@ -37,7 +38,18 @@ const createUser = async (req, res) => {
     dateOfBirth,
     profession,
   } = req.body;
-  const picture = req.file.originalname;
+  let picture;
+  if (req.file) picture = req.file.originalname;
+
+  const { error } = userValidation.validate(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return res.status(400).send("email is already registered");
+  }
 
   const salt = await bcrypt.genSalt();
   const passwordHash = await bcrypt.hash(password, salt);
@@ -55,6 +67,7 @@ const createUser = async (req, res) => {
   });
   try {
     await newUser.save();
+    return res.status(200).send(newUser);
   } catch (error) {
     console.error(error);
   }
@@ -90,6 +103,10 @@ const getUserById = async (req, res, next) => {
 
 const updateUser = async (req, res, next) => {
   const id = req.params.id.toString();
+  const { error } = userValidation.validate(req.body);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
   try {
     await User.findOneAndUpdate({ _id: id }, req.body);
     return res.status(200).send("Updated Successfully");
