@@ -56,6 +56,7 @@ const userSchema = new mongoose.Schema(
                 "blocked",
                 "pending interview",
             ],
+            default: "pending activation"
         },
         rating: {
             type: Number,
