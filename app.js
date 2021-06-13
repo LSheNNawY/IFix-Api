@@ -12,6 +12,7 @@ const indexRouter = require('./routes/index');
 const professionRouter = require('./routes/profession');
 const jobsRouter = require('./routes/jobs');
 const userRouter = require('./routes/users');
+const adminsRouter = require('./routes/admins');
 const app = express();
 
 // view engine setup
@@ -31,7 +32,7 @@ app.use(cors({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/api', [professionRouter, jobsRouter, userRouter]);
+app.use('/api', [professionRouter, jobsRouter, userRouter, adminsRouter]);
 
 
 // catch 404 and forward to error handler
