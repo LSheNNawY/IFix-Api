@@ -46,7 +46,8 @@ const createAdmin = async (req, res) => {
         phone,
         address,
         dateOfBirth,
-        status: "active"
+        role: "admin",
+        status: "active",
     });
     try {
         await newUser.save();
@@ -85,8 +86,10 @@ const updateAdmin = async (req, res) => {
 const blockAdmin = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        await User.findOneAndUpdate({ _id: id }, {status: "blocked"});
-        return res.status(200).send("Admin blocked");
+        await User.findOneAndUpdate({ _id: id }, { status: "blocked" });
+        return res
+            .status(200)
+            .json({ message: "Admin blocked", status: "blocked" });
     } catch (error) {
         console.error(error);
         return res.status(402).send("Error blocking admin");
@@ -95,8 +98,10 @@ const blockAdmin = async (req, res) => {
 const unblockAdmin = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        await User.findOneAndUpdate({ _id: id }, {status: "active"});
-        return res.status(200).send("Admin unblocked");
+        await User.findOneAndUpdate({ _id: id }, { status: "active" });
+        return res
+            .status(200)
+            .json({ message: "Admin unblocked", status: "active" });
     } catch (error) {
         console.error(error);
         return res.status(402).send("Error blocking admin");

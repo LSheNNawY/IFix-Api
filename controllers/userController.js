@@ -12,7 +12,7 @@ const userValidation = require("../helpers/userValidation");
 
 const getAll = async (req, res, next) => {
     try {
-        const users = await User.find({});
+        const users = await User.find({ role: "user" });
         return res.status(200).json(users);
     } catch (error) {
         console.log(error);
@@ -85,7 +85,7 @@ const getUserById = async (req, res, next) => {
     }
 };
 
-const updateUser = async (req, res, next) => {
+const updateUser = async (req, res) => {
     const id = req.params.id.toString();
     const { error } = userValidation.validate(req.body);
     if (error) {
@@ -100,7 +100,33 @@ const updateUser = async (req, res, next) => {
     }
 };
 
-const deleteUser = async (req, res, next) => {
+const blockUser = async (req, res) => {
+    const id = req.params.id.toString();
+    try {
+        await User.findOneAndUpdate({ _id: id }, { status: "blocked" });
+        return res
+            .status(200)
+            .json({ message: "User blocked", status: "blocked" });
+    } catch (error) {
+        console.error(error);
+        return res.status(402).send("Error blocking user");
+    }
+};
+
+const unblockUser = async (req, res) => {
+    const id = req.params.id.toString();
+    try {
+        await User.findOneAndUpdate({ _id: id }, { status: "active" });
+        return res
+            .status(200)
+            .json({ message: "User unblocked", status: "active" });
+    } catch (error) {
+        console.error(error);
+        return res.status(402).send("Error blocking user");
+    }
+};
+
+const deleteUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (user) {
@@ -114,7 +140,7 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
-const login = async (req, res, next) => {
+const login = async (req, res) => {
     const { email, password } = req.body;
     const data = {};
     console.log(req.body);
@@ -170,6 +196,8 @@ module.exports = {
     getAll,
     getUserById,
     updateUser,
+    blockUser,
+    unblockUser,
     deleteUser,
     login,
 };

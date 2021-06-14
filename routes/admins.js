@@ -8,6 +8,10 @@ router.get("/admins", async (req, res, next) => {
     await adminsController.getAllAdmins(req, res);
 });
 
+router.post("/admins", async (req, res, next) => {
+    await adminsController.createAdmin(req, res);
+});
+
 router.get("/admins/:id", async (req, res, next) => {
     await adminsController.getAdminById(req, res);
 });

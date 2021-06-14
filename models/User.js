@@ -56,11 +56,10 @@ const userSchema = new mongoose.Schema(
                 "blocked",
                 "pending interview",
             ],
-            default: "pending activation"
+            default: "pending activation",
         },
         rating: {
             type: Number,
-            default: 0,
         },
         profession: {
             type: Schema.Types.ObjectId,
