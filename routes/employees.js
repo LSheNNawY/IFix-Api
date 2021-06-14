@@ -1,4 +1,4 @@
-const adminsController = require("../controllers/adminsController");
+const employeeController = require("../controllers/employeeController");
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
@@ -6,6 +6,10 @@ const auth = require("../helpers/auth");
 
 router.get("/employees", async (req, res, next) => {
   await employeeController.getAllEmployees(req, res);
+});
+
+router.post("/employees", async (req, res, next) => {
+  await employeeController.createEmployee(req, res);
 });
 
 router.get("/employees/:id", async (req, res, next) => {
