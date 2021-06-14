@@ -3,7 +3,7 @@ const userValidation = require("../helpers/userValidation");
 
 const getAllEmployees = async (req, res) => {
   try {
-    const employees = await User.find({ role: "admin" });
+    const employees = await User.find({ role: "employee" });
     return res.status(200).json(employees);
   } catch (error) {
     console.log(error);
