@@ -14,8 +14,8 @@ const getAll = async (req, res) => {
   try {
     if (req.query.professions) {
       const professions = await Profession.find({})
-        .populate("services")
-        .limit(+req.query.professions);
+          .populate("services")
+          .limit(+req.query.professions);
       return res.status(200).json(professions);
     } else {
       const professions = await Profession.find({}).populate("services");
@@ -34,9 +34,11 @@ const getAll = async (req, res) => {
  * @returns {Promise<void>}
  */
 const createProfession = async (req, res) => {
-  if (req.file) req.body.img = req.file.filename;
-  const { body } = req;
-  const { error } = professionValidation.validate(req.body);
+  const {body}=req;
+  body.services=JSON.parse(body.services)
+  if (req.file) body.img = req.file.originalname;
+  const { error } = professionValidation.validate(body);
+
 
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -45,6 +47,7 @@ const createProfession = async (req, res) => {
     if (newProfession) {
       return res.status(200).send(newProfession);
     }
+
   } catch (err) {
     return res.status(500).send(err);
   }
@@ -77,15 +80,15 @@ const getProfessionById = async (req, res) => {
 const updateProfession = async (req, res) => {
   if (req.file) req.body.img = req.file.filename;
 
-  const { error } = professionValidation.validate(req.body);
-
-  if (error) return res.status(400).send(error.details[0].message);
+  // const { error } = professionValidation.validate(req.body);
+  //
+  // if (error) return res.status(400).send(error.details[0].message);
 
   try {
     const profession = await Profession.findOneAndUpdate(
-      { _id: req.params.id },
-      { $set: req.body },
-      { new: true }
+        { _id: req.params.id },
+        { $set: req.body },
+        { new: true }
     );
 
     if (profession) {
