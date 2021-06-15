@@ -4,11 +4,22 @@ const router = express.Router();
 const multer = require("multer");
 const auth = require("../helpers/auth");
 
+const storage = multer.diskStorage({
+  destination: (req, file, callBack) => {
+      callBack(null, "./public/uploads/users/");
+  },
+  filename: (req, file, callBack) => {
+      callBack(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
+
 router.get("/employees", async (req, res, next) => {
   await employeeController.getAllEmployees(req, res);
 });
 
-router.post("/employees", async (req, res, next) => {
+router.post("/employees",upload.single("picture"), async (req, res, next) => {
   await employeeController.createEmployee(req, res);
 });
 
@@ -16,7 +27,7 @@ router.get("/employees/:id", async (req, res, next) => {
   await employeeController.getEmployeeById(req, res);
 });
 
-router.put("/employees/:id", async (req, res, next) => {
+router.put("/employees/:id",upload.single("picture"), async (req, res, next) => {
   await employeeController.updateEmployee(req, res);
 });
 

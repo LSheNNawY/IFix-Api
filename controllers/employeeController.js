@@ -24,6 +24,10 @@ const createEmployee = async (req, res) => {
         profession,
     } = req.body;
 
+    let picture;
+    if(req.file){
+      picture = req.file.filename
+    }
     const { error } = userValidation.validate(req.body);
     if (error) {
         console.log(error);
@@ -47,6 +51,7 @@ const createEmployee = async (req, res) => {
         address,
         dateOfBirth,
         profession,
+        picture,
         role: "employee",
         status: "pending interview",
     });
