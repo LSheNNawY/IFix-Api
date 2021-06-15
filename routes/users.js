@@ -8,7 +8,7 @@ const auth = require("../helpers/auth");
 
 const storage = multer.diskStorage({
     destination: (req, file, callBack) => {
-        callBack(null, "./public/uploads/users");
+        callBack(null, "./public/uploads/users/");
     },
     filename: (req, file, callBack) => {
         callBack(null, Date.now() + "-" + file.originalname);

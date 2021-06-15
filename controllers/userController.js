@@ -39,7 +39,7 @@ const createUser = async (req, res) => {
         profession,
     } = req.body;
     let picture;
-    if (req.file) picture = req.file.originalname;
+    if (req.file) picture = req.file.filename;
 
     const { error } = userValidation.validate(req.body);
     if (error) {
