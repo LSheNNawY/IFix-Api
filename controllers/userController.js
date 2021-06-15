@@ -10,7 +10,7 @@ const userValidation = require("../helpers/userValidation");
  * @returns {Promise<void>}
  */
 
-const getAll = async (req, res, next) => {
+const getAll = async (req, res) => {
     try {
         const users = await User.find({ role: "user" });
         return res.status(200).json(users);
@@ -74,7 +74,7 @@ const createUser = async (req, res) => {
     }
 };
 
-const getUserById = async (req, res, next) => {
+const getUserById = async (req, res) => {
     const id = req.params.id.toString();
     try {
         const user = await User.findById(id);
