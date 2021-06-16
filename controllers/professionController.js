@@ -81,7 +81,9 @@ const updateProfession = async (req, res) => {
   if (req.file) req.body.img = req.file.filename;
 
   // const { error } = professionValidation.validate(req.body);
-  //
+  console.log(req.body);
+  // console.log(error)
+
   // if (error) return res.status(400).send(error.details[0].message);
 
   try {
