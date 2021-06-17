@@ -4,7 +4,7 @@ const multer = require("multer");
 const professionValidation = require("../helpers/professionValidations");
 
 /**
- * get all profession function
+ * get all professions function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -23,20 +23,22 @@ const getAll = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    return res.status(400).send({ message: "profession not found" });
+    return res.status(400).send({ message: "professions not found" });
   }
 };
 
 /**
- * create profession function
+ * create professions function
  * @param req
  * @param res
  * @returns {Promise<void>}
  */
 const createProfession = async (req, res) => {
   const {body}=req;
+
   body.services=JSON.parse(body.services)
-  if (req.file) body.img = req.file.originalname;
+
+  if (req.file) body.img = req.file.filename;
   const { error } = professionValidation.validate(body);
 
 
@@ -54,7 +56,7 @@ const createProfession = async (req, res) => {
 };
 
 /**
- * search profession function
+ * search professions function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -66,12 +68,12 @@ const getProfessionById = async (req, res) => {
       res.send(profession);
     }
   } catch (err) {
-    return res.status(400).send({ message: "profession not found" });
+    return res.status(400).send({ message: "professions not found" });
   }
 };
 
 /**
- * update profession function
+ * update professions function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -97,12 +99,12 @@ const updateProfession = async (req, res) => {
       res.send(profession);
     }
   } catch (err) {
-    return res.status(400).send({ message: "profession not found" });
+    return res.status(400).send({ message: "professions not found" });
   }
 };
 
 /**
- * delete profession function
+ * delete professions function
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -114,9 +116,9 @@ const deleteProfession = async (req, res) => {
 
     if (profession) {
       await profession.remove();
-      return res.status(200).json({ message: "profession Deleted" });
+      return res.status(200).json({ message: "professions Deleted" });
     }
-    return res.status(404).json({ message: "Error deleting profession" });
+    return res.status(404).json({ message: "Error deleting professions" });
   } catch (err) {
     return res.status(500).json({ error: err });
   }
