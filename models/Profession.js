@@ -33,6 +33,13 @@ const ProfessionSchema = new mongoose.Schema(
 
             },
         ],
+        employees:[
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+                required: false,
+            },
+        ],
         img: {
             type: String,
         }

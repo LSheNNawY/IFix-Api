@@ -18,7 +18,7 @@ const getAll = async (req, res) => {
           .limit(+req.query.professions);
       return res.status(200).json(professions);
     } else {
-      const professions = await Profession.find({}).populate("services");
+      const professions = await Profession.find({}).populate('employees');
       return res.status(200).json(professions);
     }
   } catch (err) {
@@ -36,11 +36,10 @@ const getAll = async (req, res) => {
 const createProfession = async (req, res) => {
   const {body}=req;
 
-  body.services=JSON.parse(body.services)
+  // body.services=JSON.parse(body.services)
 
   if (req.file) body.img = req.file.filename;
   const { error } = professionValidation.validate(body);
-
 
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -63,7 +62,7 @@ const createProfession = async (req, res) => {
  */
 const getProfessionById = async (req, res) => {
   try {
-    const profession = await Profession.findOne({ _id: req.params.id });
+    const profession = await Profession.findOne({ _id: req.params.id }).populate('employees');
     if (profession) {
       res.send(profession);
     }
