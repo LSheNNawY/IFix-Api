@@ -14,7 +14,7 @@ const getAll = async (req, res) => {
   try {
     if (req.query.professions) {
       const professions = await Profession.find({})
-          .populate("services")
+          .populate('employees')
           .limit(+req.query.professions);
       return res.status(200).json(professions);
     } else {
