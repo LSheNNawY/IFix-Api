@@ -11,20 +11,21 @@ const professionValidation = require("../helpers/professionValidations");
  */
 
 const getAll = async (req, res) => {
-  try {
-    if (req.query.professions) {
-      const professions = await Profession.find({})
-          .populate("services")
-          .limit(+req.query.professions);
-      return res.status(200).json(professions);
-    } else {
-      const professions = await Profession.find({}).populate("services");
-      return res.status(200).json(professions);
+    try {
+        if (req.query.professions) {
+            const professions = await Profession.find({})
+                .populate("services")
+                .populate("user")
+                .limit(+req.query.professions);
+            return res.status(200).json(professions);
+        } else {
+            const professions = await Profession.find({}).populate("services").populate("user");
+            return res.status(200).json(professions);
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(400).send({ message: "professions not found" });
     }
-  } catch (err) {
-    console.log(err);
-    return res.status(400).send({ message: "professions not found" });
-  }
 };
 
 /**
@@ -34,25 +35,24 @@ const getAll = async (req, res) => {
  * @returns {Promise<void>}
  */
 const createProfession = async (req, res) => {
-  const {body}=req;
+    const { body } = req;
 
-  body.services=JSON.parse(body.services)
+    body.services = JSON.parse(body.services);
 
-  if (req.file) body.img = req.file.filename;
-  const { error } = professionValidation.validate(body);
+    if (req.file) body.img = req.file.filename;
+    const { error } = professionValidation.validate(body);
 
+    if (error) return res.status(400).send(error.details[0].message);
 
-  if (error) return res.status(400).send(error.details[0].message);
-
-  try {
-    const newProfession = await Profession.create(body);
-    if (newProfession) {
-      return res.status(200).send(newProfession);
+    try {
+        const newProfession = await Profession.create(body);
+        if (newProfession) {
+            return res.status(200).send(newProfession);
+        }
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send(err);
     }
-
-  } catch (err) {
-    return res.status(500).send(err);
-  }
 };
 
 /**
@@ -62,14 +62,14 @@ const createProfession = async (req, res) => {
  * @returns {Promise<void>}
  */
 const getProfessionById = async (req, res) => {
-  try {
-    const profession = await Profession.findOne({ _id: req.params.id });
-    if (profession) {
-      res.send(profession);
+    try {
+        const profession = await Profession.findOne({ _id: req.params.id });
+        if (profession) {
+            res.send(profession);
+        }
+    } catch (err) {
+        return res.status(400).send({ message: "professions not found" });
     }
-  } catch (err) {
-    return res.status(400).send({ message: "professions not found" });
-  }
 };
 
 /**
@@ -80,27 +80,27 @@ const getProfessionById = async (req, res) => {
  */
 
 const updateProfession = async (req, res) => {
-  if (req.file) req.body.img = req.file.filename;
+    if (req.file) req.body.img = req.file.filename;
 
-  // const { error } = professionValidation.validate(req.body);
-  console.log(req.body);
-  // console.log(error)
+    // const { error } = professionValidation.validate(req.body);
+    console.log(req.body);
+    // console.log(error)
 
-  // if (error) return res.status(400).send(error.details[0].message);
+    // if (error) return res.status(400).send(error.details[0].message);
 
-  try {
-    const profession = await Profession.findOneAndUpdate(
-        { _id: req.params.id },
-        { $set: req.body },
-        { new: true }
-    );
+    try {
+        const profession = await Profession.findOneAndUpdate(
+            { _id: req.params.id },
+            { $set: req.body },
+            { new: true }
+        );
 
-    if (profession) {
-      res.send(profession);
+        if (profession) {
+            res.send(profession);
+        }
+    } catch (err) {
+        return res.status(400).send({ message: "professions not found" });
     }
-  } catch (err) {
-    return res.status(400).send({ message: "professions not found" });
-  }
 };
 
 /**
@@ -111,23 +111,23 @@ const updateProfession = async (req, res) => {
  */
 
 const deleteProfession = async (req, res) => {
-  try {
-    const profession = await Profession.findById(req.params.id);
+    try {
+        const profession = await Profession.findById(req.params.id);
 
-    if (profession) {
-      await profession.remove();
-      return res.status(200).json({ message: "professions Deleted" });
+        if (profession) {
+            await profession.remove();
+            return res.status(200).json({ message: "professions Deleted" });
+        }
+        return res.status(404).json({ message: "Error deleting professions" });
+    } catch (err) {
+        return res.status(500).json({ error: err });
     }
-    return res.status(404).json({ message: "Error deleting professions" });
-  } catch (err) {
-    return res.status(500).json({ error: err });
-  }
 };
 
 module.exports = {
-  getAll,
-  createProfession,
-  getProfessionById,
-  updateProfession,
-  deleteProfession,
+    getAll,
+    createProfession,
+    getProfessionById,
+    updateProfession,
+    deleteProfession,
 };
