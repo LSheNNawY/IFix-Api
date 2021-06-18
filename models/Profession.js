@@ -13,7 +13,7 @@ const ProfessionSchema = new mongoose.Schema(
         },
         services: [
             {
-                title: {
+                service: {
                     type: String,
                     required: [true, "title is required"],
                     minLength: 5,
@@ -24,18 +24,17 @@ const ProfessionSchema = new mongoose.Schema(
                     type: String,
                     required: [true,"description is required"],
                     minLength: 10,
-        
+
                 },
                 price: {
                     type:Number,
                     default: 0
                 }
-        
+
             },
         ],
         img: {
             type: String,
-            required:true
         }
 
     },
@@ -43,12 +42,12 @@ const ProfessionSchema = new mongoose.Schema(
 );
 const Profession = mongoose.model("Profession", ProfessionSchema);
 //
-// function validateProfession(profession) {
+// function validateProfession(professions) {
 //     const schema = Joi.object({
 //         title: Joi.string().min(3).max(15).required(),
 //         services: Joi.array().items(Joi.array())
 //     });
-//     return schema.validate(profession);
+//     return schema.validate(professions);
 // }
 
 

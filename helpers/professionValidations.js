@@ -6,7 +6,7 @@ const professionValidation = Joi.object({
 
   services: Joi.array().items(
     Joi.object().keys({
-      title: Joi.string().min(5).max(20).trim().required(),
+      service: Joi.string().min(5).max(20).trim().required(),
       description: Joi.string().min(10).required(),
       price: Joi.number(),
     })
