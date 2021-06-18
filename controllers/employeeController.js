@@ -4,7 +4,7 @@ const userValidation = require("../helpers/userValidation");
 
 const getAllEmployees = async (req, res) => {
     try {
-        const employees = await User.find({ role: "employee" }).populate('profession');
+        const employees = await User.find({ role: "employee" }).populate('profession')
         return res.status(200).json(employees);
     } catch (error) {
         console.log(error);
