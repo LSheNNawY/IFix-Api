@@ -32,30 +32,12 @@ const ProfessionSchema = new mongoose.Schema(
                 }
 
             },
-        ],
-        employees:[
-            {
-                type: Schema.Types.ObjectId,
-                ref: "User",
-                required: false,
-            },
-        ],
-        img: {
-            type: String,
-        }
+        ]
 
     },
     {timestamps: {createdAt: "created_at", updatedAt: false}}
 );
 const Profession = mongoose.model("Profession", ProfessionSchema);
-//
-// function validateProfession(professions) {
-//     const schema = Joi.object({
-//         title: Joi.string().min(3).max(15).required(),
-//         services: Joi.array().items(Joi.array())
-//     });
-//     return schema.validate(professions);
-// }
 
 
 module.exports = Profession;

@@ -12,13 +12,6 @@ const professionValidation = Joi.object({
     })
     
   ),
-
-  employees: Joi.array().items(
-    Joi.object({
-      id: Joi.objectId(),
-    })    
-  ),
-
   img: Joi.string()
 });
 
