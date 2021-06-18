@@ -36,7 +36,7 @@ const getAll = async (req, res) => {
 const createProfession = async (req, res) => {
   const {body}=req;
 
-  // body.services=JSON.parse(body.services)
+  body.services=JSON.parse(body.services)
 
   if (req.file) body.img = req.file.filename;
   const { error } = professionValidation.validate(body);
