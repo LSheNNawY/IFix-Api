@@ -61,7 +61,13 @@ const createEmployee = async (req, res) => {
 const getEmployeeById = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        const employee = await User.findById(id).populate('profession');
+        const employee = await User.findById(id).populate('profession').populate({
+            path: 'jobs',
+            populate: {
+                path: 'client', 
+                model: 'User'
+            }
+        })
         return res.status(200).json(employee);
     } catch (error) {
         console.error(error);
