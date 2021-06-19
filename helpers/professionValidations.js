@@ -10,9 +10,9 @@ const professionValidation = Joi.object({
       description: Joi.string().min(10).required(),
       price: Joi.number(),
     })
+    
   ),
-
-  img: Joi.string().required(),
+  img: Joi.string()
 });
 
 module.exports = professionValidation;

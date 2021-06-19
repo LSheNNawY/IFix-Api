@@ -15,11 +15,13 @@ const getAll = async (req, res) => {
         if (req.query.professions) {
             const professions = await Profession.find({})
                 .populate("services")
-                .populate("user")
+                .populate("employees")
                 .limit(+req.query.professions);
             return res.status(200).json(professions);
         } else {
-            const professions = await Profession.find({}).populate("services").populate("user");
+            const professions = await Profession.find({})
+                .populate("services")
+                .populate("employees");
             return res.status(200).json(professions);
         }
     } catch (err) {
@@ -63,7 +65,9 @@ const createProfession = async (req, res) => {
  */
 const getProfessionById = async (req, res) => {
     try {
-        const profession = await Profession.findOne({ _id: req.params.id });
+        const profession = await Profession.findOne({
+            _id: req.params.id,
+        }).populate("employees");
         if (profession) {
             res.send(profession);
         }
@@ -81,13 +85,6 @@ const getProfessionById = async (req, res) => {
 
 const updateProfession = async (req, res) => {
     if (req.file) req.body.img = req.file.filename;
-
-    // const { error } = professionValidation.validate(req.body);
-    console.log(req.body);
-    // console.log(error)
-
-    // if (error) return res.status(400).send(error.details[0].message);
-
     try {
         const profession = await Profession.findOneAndUpdate(
             { _id: req.params.id },
