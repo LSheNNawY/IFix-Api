@@ -12,7 +12,7 @@ const professionValidation = Joi.object({
     })
     
   ),
-  img: Joi.string()
+  img: Joi.string().required()
 });
 
 module.exports = professionValidation;
