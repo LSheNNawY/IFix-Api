@@ -1,10 +1,11 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const userValidation = require("../helpers/userValidation");
+const professionsController = require("./professionController")
 
 const getAllEmployees = async (req, res) => {
     try {
-        const employees = await User.find({ role: "employee" }).populate('profession');
+        const employees = await User.find({ role: "employee" }).populate('profession')
         return res.status(200).json(employees);
     } catch (error) {
         console.log(error);
@@ -52,6 +53,7 @@ const createEmployee = async (req, res) => {
     });
     try {
         await newEmployee.save();
+        await professionsController.assignEmployeeToProfession(profession, newEmployee._id)
         return res.status(200).send(newEmployee);
     } catch (error) {
         console.error(error);
@@ -61,7 +63,7 @@ const createEmployee = async (req, res) => {
 const getEmployeeById = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        const employee = await User.findById(id);
+        const employee = await User.findById(id).populate('profession');
         return res.status(200).json(employee);
     } catch (error) {
         console.error(error);
