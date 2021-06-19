@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const userValidation = require("../helpers/userValidation");
-const professionsController = require("./employeeController")
+const professionsController = require("./professionController")
 
 const getAllEmployees = async (req, res) => {
     try {
@@ -63,7 +63,7 @@ const createEmployee = async (req, res) => {
 const getEmployeeById = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        const employee = await User.findById(id).populate('profession').populate('jobs').populate('client');
+        const employee = await User.findById(id).populate('profession');
         return res.status(200).json(employee);
     } catch (error) {
         console.error(error);

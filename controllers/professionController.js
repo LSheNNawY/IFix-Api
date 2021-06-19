@@ -122,14 +122,9 @@ const deleteProfession = async (req, res) => {
 };
 
 const assignEmployeeToProfession = async (professionId, employeeId) => {
-    const profession = await Profession.findOneAndUpdate(
-        { _id: professionId },
-        { $set: {employees : employeeId} },
-        { new: true }
-    );
-
-    if (profession)
-        console.log(profession);
+    const profession = await Profession.findById(professionId);
+    profession.employees.push(employeeId)
+    profession.save();
 }
 
 module.exports = {
