@@ -32,6 +32,18 @@ const ProfessionSchema = new mongoose.Schema(
                 }
 
             },
+        ],
+        img:{
+            type: String,
+            required:true
+        },
+        employees:[
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+                required:false,
+
+            }
         ]
 
     },
