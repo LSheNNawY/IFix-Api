@@ -105,7 +105,4 @@ dist
 # TernJS port file
 .tern-port
 
-./public/uploads/users/*
-
-./public/uploads/professions/*
-
+./public/uploads/
