@@ -58,4 +58,8 @@ router.delete("/users/:id", async (req, res, next) => {
     await userController.deleteUser(req, res);
 });
 
+router.post("/users/verify-password", async (req, res)=> {
+    await userController.verifyPassword(req, res)
+})
+
 module.exports = router;
