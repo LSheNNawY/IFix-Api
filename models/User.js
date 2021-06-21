@@ -70,7 +70,7 @@ const userSchema = new mongoose.Schema(
                 type: Schema.Types.ObjectId,
                 ref: "Job",
             },
-        ],
+        ]
     },
     { timestamps: { createdAt: "created_at", updatedAt: false } }
 );

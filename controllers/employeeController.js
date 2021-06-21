@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const userValidation = require("../helpers/userValidation");
+const professionsController = require("./professionController");
 
 const getAllEmployees = async (req, res) => {
   try {
@@ -107,6 +108,7 @@ const blockEmployee = async (req, res) => {
     return res.status(402).send("Error blocking Employee");
   }
 };
+
 const unblockEmployee = async (req, res) => {
   const id = req.params.id.toString();
   try {
