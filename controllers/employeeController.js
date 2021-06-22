@@ -136,6 +136,7 @@ const deleteEmployee = async (req, res) => {
   }
 };
 
+
 module.exports = {
   getAllEmployees,
   getEmployeeById,

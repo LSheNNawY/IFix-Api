@@ -154,6 +154,8 @@ const login = async (req, res) => {
         data.userId = user.id;
         data.username = user.firstname + " " + user.lastname;
         data.email = user.email;
+        data.role = user.role;
+        data.picture = user.picture;
         data.created_at = user.created_at;
 
         const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
@@ -207,6 +209,20 @@ const verifyPassword = async (req, res) => {
   }
 };
 
+const isLoggedIn = (req, res) => {
+  try {
+    const token = req.cookie.token;
+    if (!token) {
+      return res.json(false);
+    }
+
+    const verifiedToken = jwt.verify(token, process.env.SECRET_KEY);
+    res.send(true);
+  } catch (err) {
+    res.send(false);
+  }
+};
+
 module.exports = {
   createUser,
   getAll,
@@ -216,5 +232,5 @@ module.exports = {
   unblockUser,
   deleteUser,
   login,
-  verifyPassword
+  verifyPassword,
 };
