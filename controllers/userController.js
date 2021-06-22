@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const fs = require("fs");
+const { mail } = require("../helpers/mail");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 /**
@@ -28,51 +28,55 @@ const getAll = async (req, res) => {
  */
 
 const createUser = async (req, res) => {
-  console.log(req);
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    phone,
-    address,
-    dateOfBirth,
-    profession,
-  } = req.body;
-  let picture;
-  if (req.file) picture = req.file.filename;
+    const {
+        firstName,
+        lastName,
+        email,
+        password,
+        phone,
+        address,
+        dateOfBirth,
+    } = req.body;
+    let picture;
+    if (req.file) picture = req.file.filename;
 
-  const { error } = userValidation.validate(req.body);
-  if (error) {
-    console.log(error);
-    return res.status(400).send(error.details[0].message);
-  }
+    const { error } = userValidation.validate(req.body);
+    if (error) {
+        console.log(error);
+        return res.status(400).send(error.details[0].message);
+    }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).send("email is already registered");
-  }
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+        return res.status(400).send("email is already registered");
+    }
 
-  const salt = await bcrypt.genSalt();
-  const passwordHash = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
 
-  const newUser = new User({
-    firstName,
-    lastName,
-    email,
-    passwordHash,
-    phone,
-    address,
-    dateOfBirth,
-    profession,
-    picture,
-  });
-  try {
-    await newUser.save();
-    return res.status(200).send(newUser);
-  } catch (error) {
-    console.error(error);
-  }
+    const newUser = new User({
+        firstName,
+        lastName,
+        email,
+        passwordHash,
+        phone,
+        address,
+        dateOfBirth,
+        picture,
+    });
+    try {
+        const saved = await newUser.save();
+        if (saved) {
+            await mail({
+                to: email,
+                html: `<h2>You have registered</h2>`,
+                subject: 'IFix registeratin'
+            });
+            return res.status(200).send(newUser);
+        }
+    } catch (error) {
+        console.error(error);
+    }
 };
 
 const getUserById = async (req, res) => {
