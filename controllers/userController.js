@@ -233,4 +233,5 @@ module.exports = {
   deleteUser,
   login,
   verifyPassword,
+  isLoggedIn
 };
