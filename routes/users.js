@@ -66,4 +66,8 @@ router.get("/users/logged-in", async (req, res) => {
   await userController.isLoggedIn(req, res);
 });
 
+router.get("/users/logout", (req, res) => {
+  userController.logout(req, res);
+});
+
 module.exports = router;

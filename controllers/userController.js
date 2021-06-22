@@ -28,55 +28,48 @@ const getAll = async (req, res) => {
  */
 
 const createUser = async (req, res) => {
-    const {
-        firstName,
-        lastName,
-        email,
-        password,
-        phone,
-        address,
-        dateOfBirth,
-    } = req.body;
-    let picture;
-    if (req.file) picture = req.file.filename;
+  const { firstName, lastName, email, password, phone, address, dateOfBirth } =
+    req.body;
+  let picture;
+  if (req.file) picture = req.file.filename;
 
-    const { error } = userValidation.validate(req.body);
-    if (error) {
-        console.log(error);
-        return res.status(400).send(error.details[0].message);
+  const { error } = userValidation.validate(req.body);
+  if (error) {
+    console.log(error);
+    return res.status(400).send(error.details[0].message);
+  }
+
+  const userExists = await User.findOne({ email });
+  if (userExists) {
+    return res.status(400).send("email is already registered");
+  }
+
+  const salt = await bcrypt.genSalt();
+  const passwordHash = await bcrypt.hash(password, salt);
+
+  const newUser = new User({
+    firstName,
+    lastName,
+    email,
+    passwordHash,
+    phone,
+    address,
+    dateOfBirth,
+    picture,
+  });
+  try {
+    const saved = await newUser.save();
+    if (saved) {
+      await mail({
+        to: email,
+        html: `<h2>You have registered</h2>`,
+        subject: "IFix registeratin",
+      });
+      return res.status(200).send(newUser);
     }
-
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-        return res.status(400).send("email is already registered");
-    }
-
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    const newUser = new User({
-        firstName,
-        lastName,
-        email,
-        passwordHash,
-        phone,
-        address,
-        dateOfBirth,
-        picture,
-    });
-    try {
-        const saved = await newUser.save();
-        if (saved) {
-            await mail({
-                to: email,
-                html: `<h2>You have registered</h2>`,
-                subject: 'IFix registeratin'
-            });
-            return res.status(200).send(newUser);
-        }
-    } catch (error) {
-        console.error(error);
-    }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const getUserById = async (req, res) => {
@@ -227,6 +220,20 @@ const isLoggedIn = (req, res) => {
   }
 };
 
+const logout = (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.cookie("username", "", {
+    expires: new Date(0),
+  });
+  res.cookie("userId", "", {
+    expires: new Date(0),
+  });
+  res.send();
+};
+
 module.exports = {
   createUser,
   getAll,
@@ -237,5 +244,6 @@ module.exports = {
   deleteUser,
   login,
   verifyPassword,
-  isLoggedIn
+  isLoggedIn,
+  logout,
 };
