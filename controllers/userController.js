@@ -1,6 +1,6 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const fs = require("fs");
+const { mail } = require("../helpers/mail");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 /**
@@ -36,7 +36,6 @@ const createUser = async (req, res) => {
         phone,
         address,
         dateOfBirth,
-        profession,
     } = req.body;
     let picture;
     if (req.file) picture = req.file.filename;
@@ -63,12 +62,18 @@ const createUser = async (req, res) => {
         phone,
         address,
         dateOfBirth,
-        profession,
         picture,
     });
     try {
-        await newUser.save();
-        return res.status(200).send(newUser);
+        const saved = await newUser.save();
+        if (saved) {
+            await mail({
+                to: email,
+                html: `<h2>You have registered</h2>`,
+                subject: 'IFix registeratin'
+            });
+            return res.status(200).send(newUser);
+        }
     } catch (error) {
         console.error(error);
     }
@@ -155,6 +160,7 @@ const login = async (req, res) => {
                 data.userId = user.id;
                 data.username = user.firstname + " " + user.lastname;
                 data.email = user.email;
+                data.role = user.role;
                 data.created_at = user.created_at;
 
                 const token = jwt.sign(
