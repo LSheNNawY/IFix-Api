@@ -77,7 +77,7 @@ const createUser = async (req, res) => {
 const getUserById = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        const user = await User.findById(id);
+        const user = await User.findById(id).populate('jobs');
         return res.status(200).send(user);
     } catch (error) {
         console.error(error);
