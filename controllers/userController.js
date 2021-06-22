@@ -156,7 +156,7 @@ const login = async (req, res) => {
     bcrypt.compare(password, user.passwordHash, (err, matched) => {
       if (matched) {
         data.userId = user.id;
-        data.username = user.firstname + " " + user.lastname;
+        data.username = user.firstName + " " + user.lastName;
         data.email = user.email;
         data.role = user.role;
         data.picture = user.picture;
