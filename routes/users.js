@@ -16,6 +16,15 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+router.post("/users/verify-password", async (req, res) => {
+  await userController.verifyPassword(req, res);
+});
+
+router.get("/users/logged-in", async (req, res) => {
+  await userController.isLoggedIn(req, res);
+});
+
 router.post("/users", upload.single("picture"), async (req, res) => {
   await userController.createUser(req, res);
 });
@@ -58,16 +67,5 @@ router.delete("/users/:id", async (req, res, next) => {
   await userController.deleteUser(req, res);
 });
 
-router.post("/users/verify-password", async (req, res) => {
-  await userController.verifyPassword(req, res);
-});
-
-router.get("/users/logged-in", async (req, res) => {
-  await userController.isLoggedIn(req, res);
-});
-
-router.get("/users/logout", (req, res) => {
-  userController.logout(req, res);
-});
 
 module.exports = router;

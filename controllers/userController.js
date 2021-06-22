@@ -220,19 +220,19 @@ const isLoggedIn = (req, res) => {
   }
 };
 
-const logout = (req, res) => {
-  res.cookie("token", "", {
-    httpOnly: true,
-    expires: new Date(0),
-  });
-  res.cookie("username", "", {
-    expires: new Date(0),
-  });
-  res.cookie("userId", "", {
-    expires: new Date(0),
-  });
-  res.send();
-};
+// const logout = (req, res) => {
+//   res.cookie("token", "", {
+//     httpOnly: true,
+//     expires: new Date(0),
+//   });
+//   res.cookie("username", "", {
+//     expires: new Date(0),
+//   });
+//   res.cookie("userId", "", {
+//     expires: new Date(0),
+//   });
+//   res.send();
+// };
 
 module.exports = {
   createUser,
@@ -245,5 +245,5 @@ module.exports = {
   login,
   verifyPassword,
   isLoggedIn,
-  logout,
+  // logout,
 };
