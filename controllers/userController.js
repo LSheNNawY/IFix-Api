@@ -234,6 +234,26 @@ const logout = (req, res) => {
   res.send();
 };
 
+const getCurrentUser = async (req, res) => {
+  let user = {};
+  try {
+    const userData = await User.findById(req.cookie.userId);
+    if (userData) {
+      user = {
+        id: userData._id,
+        username: userData.firstName + " " + userData.lastName,
+        email: userData.email,
+        role: userData.role,
+        picture: userData.picture,
+      };
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.send(err);
+  }
+};
+
 module.exports = {
   createUser,
   getAll,
@@ -246,4 +266,5 @@ module.exports = {
   verifyPassword,
   isLoggedIn,
   logout,
+  getCurrentUser,
 };
