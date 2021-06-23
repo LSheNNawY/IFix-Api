@@ -208,7 +208,7 @@ const verifyPassword = async (req, res) => {
 
 const isLoggedIn = (req, res) => {
   try {
-    const token = req.cookie.token;
+    const token = req.cookies.token;
     if (!token) {
       return res.json(false);
     }
@@ -237,7 +237,8 @@ const logout = (req, res) => {
 const getCurrentUser = async (req, res) => {
   let user = {};
   try {
-    const userData = await User.findById(req.cookie.userId);
+    const userData = await User.findById(req.cookies.userId);
+    console.log(userData)
     if (userData) {
       user = {
         id: userData._id,
