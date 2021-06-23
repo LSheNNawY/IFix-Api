@@ -247,9 +247,12 @@ const getCurrentUser = async (req, res) => {
         role: userData.role,
         picture: userData.picture,
       };
+
+      res.status(200).json(user);
     }
 
-    res.status(200).json(user);
+    res.send(undefined)
+
   } catch (err) {
     res.send(err);
   }
