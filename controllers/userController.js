@@ -208,7 +208,7 @@ const verifyPassword = async (req, res) => {
 
 const isLoggedIn = (req, res) => {
   try {
-    const token = req.cookie.token;
+    const token = req.cookies.token;
     if (!token) {
       return res.json(false);
     }
@@ -220,19 +220,40 @@ const isLoggedIn = (req, res) => {
   }
 };
 
-// const logout = (req, res) => {
-//   res.cookie("token", "", {
-//     httpOnly: true,
-//     expires: new Date(0),
-//   });
-//   res.cookie("username", "", {
-//     expires: new Date(0),
-//   });
-//   res.cookie("userId", "", {
-//     expires: new Date(0),
-//   });
-//   res.send();
-// };
+const logout = (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.cookie("username", "", {
+    expires: new Date(0),
+  });
+  res.cookie("userId", "", {
+    expires: new Date(0),
+  });
+  res.send();
+};
+
+const getCurrentUser = async (req, res) => {
+  let user = {};
+  try {
+    const userData = await User.findById(req.cookies.userId);
+    console.log(userData)
+    if (userData) {
+      user = {
+        id: userData._id,
+        username: userData.firstName + " " + userData.lastName,
+        email: userData.email,
+        role: userData.role,
+        picture: userData.picture,
+      };
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.send(err);
+  }
+};
 
 module.exports = {
   createUser,
@@ -245,5 +266,6 @@ module.exports = {
   login,
   verifyPassword,
   isLoggedIn,
-  // logout,
+  logout,
+  getCurrentUser,
 };

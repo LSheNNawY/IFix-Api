@@ -47,6 +47,10 @@ router.post("/users/logout", auth, async (req, res, next) => {
   res.clearCookie("username");
 });
 
+router.get("/users/current-user", async (req, res) => {
+  await userController.getCurrentUser(req, res);
+});
+
 router.get("/users/:id", async (req, res, next) => {
   await userController.getUserById(req, res);
 });
