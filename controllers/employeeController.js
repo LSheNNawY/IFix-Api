@@ -67,7 +67,7 @@ const createEmployee = async (req, res) => {
 };
 
 const getEmployeeById = async (req, res) => {
-    const id = req.params.id.toString();
+  const id = req.params.id.toString();
     try {
         const employee = await User.findById(id)
             .populate("profession")

@@ -75,7 +75,7 @@ const createUser = async (req, res) => {
 const getUserById = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        const user = await User.findById(id);
+        const user = await User.findById(id).populate('jobs');
         return res.status(200).send(user);
     } catch (error) {
         console.error(error);
@@ -237,7 +237,7 @@ const logout = (req, res) => {
 const getCurrentUser = async (req, res) => {
     let user = {};
     try {
-        const userData = await User.findById(req.cookies.userId);
+        const userData = await User.findById(req.cookies.userId)
         if (userData) {
             user = {
                 id: userData._id,
@@ -248,7 +248,7 @@ const getCurrentUser = async (req, res) => {
                 picture: userData.picture,
             };
 
-            res.status(200).json(user);
+            return res.status(200).json(user);
         }
 
         res.send(undefined)

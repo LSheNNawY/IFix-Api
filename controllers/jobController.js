@@ -98,6 +98,7 @@ const updateDescription = async (req, res) => {
 
 const updateReview = async (req, res) => {
     const body = req.body;
+    console.log(req.body);
     try {
         const job = await Job.findById(req.params.id)
         if (JSON.stringify(job.ended_at) !== "{}") {
