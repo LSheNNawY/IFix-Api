@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-const {Schema} = require("mongoose");
-// const Joi = require('joi')
-// Joi.objectId = require('joi-objectid')(Joi)
+const { Schema } = require("mongoose");
 
 const ProfessionSchema = new mongoose.Schema(
     {
@@ -9,7 +7,7 @@ const ProfessionSchema = new mongoose.Schema(
             type: String,
             required: true,
             minLength: 3,
-            maxLength: 15
+            maxLength: 15,
         },
         services: [
             {
@@ -18,38 +16,33 @@ const ProfessionSchema = new mongoose.Schema(
                     required: [true, "title is required"],
                     minLength: 5,
                     maxLength: 20,
-                    trim:true
+                    trim: true,
                 },
                 description: {
                     type: String,
-                    required: [true,"description is required"],
+                    required: [true, "description is required"],
                     minLength: 10,
-
                 },
                 price: {
-                    type:Number,
-                    default: 0
-                }
-
+                    type: Number,
+                    default: 0,
+                },
             },
         ],
         img: {
             type: String,
-        }
-
+            required: true,
+        },
+        employees: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: "User",
+                required: false,
+            },
+        ],
     },
-    {timestamps: {createdAt: "created_at", updatedAt: false}}
+    { timestamps: { createdAt: "created_at", updatedAt: false } }
 );
 const Profession = mongoose.model("Profession", ProfessionSchema);
-//
-// function validateProfession(professions) {
-//     const schema = Joi.object({
-//         title: Joi.string().min(3).max(15).required(),
-//         services: Joi.array().items(Joi.array())
-//     });
-//     return schema.validate(professions);
-// }
-
 
 module.exports = Profession;
-// module.exports.validate = validateProfession;

@@ -15,6 +15,10 @@ router.delete('/jobs/:id', async function (req, res, next) {
     await jobsController.deleteJob(req, res)
 });
 
+// router.get('/jobs/:id', async function (req, res, next) {
+//     await jobsController.getJobById(req, res);
+// });
+
 router.put('/jobs/:id/updateStarted', async function (req, res, next) {
     await jobsController.updateStaredAt(req, res)
 });

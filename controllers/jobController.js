@@ -31,6 +31,17 @@ const getAll = async (req, res) => {
     }
 };
 
+// const getJobById = async (req, res) => {
+//     const id = req.params.id.toString();
+//     try {
+//         const job = await Job.findById(id).populate('client');
+//         return res.status(200).send(job);
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(400).send("job not found");
+//     }
+// };
+
 const deleteJob = async (req, res) => {
     try {
         const job = await Job.findById(req.params.id);
@@ -121,5 +132,6 @@ module.exports = {
     updateEndedAt,
     updateDescription,
     updateReview,
+    // getJobById
     // deleteReview
 };
