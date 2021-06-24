@@ -6,9 +6,7 @@ const createJob = async (req, res) => {
     try {
         job.client = mongoose.Types.ObjectId(job.client);
         job.employee = mongoose.Types.ObjectId(job.employee);
-        job.service = mongoose.Types.ObjectId(job.service);
         job.profession = mongoose.Types.ObjectId(job.profession);
-        // return res.send(job.client);
         await Job.create(job);
         return res.status(200).send("done");
     } catch (err) {
@@ -23,7 +21,6 @@ const getAll = async (req, res) => {
             .populate("client")
             .populate("employee")
             .populate("profession")
-            .populate("service");
         return res.status(200).json(job);
     } catch (err) {
         console.log(err);
