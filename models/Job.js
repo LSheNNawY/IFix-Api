@@ -34,11 +34,11 @@ const jobSchema = new mongoose.Schema(
             enum: ["Cash on delivery", "Credit Card"],
             default: "Cash on delivery",
         },
-       /*  service: {
-            type: Schema.Types.ObjectId,
-            ref: "Service",
-            required: true
-        },  */
+        // service: {
+        //     type: Schema.Types.ObjectId,
+        //     ref: "Service",
+        //     required: true
+        // },
         review: {
             rate: {
                 type: Number,
