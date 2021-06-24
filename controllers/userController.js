@@ -237,8 +237,7 @@ const logout = (req, res) => {
 const getCurrentUser = async (req, res) => {
   let user = {};
   try {
-    const userData = await User.findById(req.cookies.userId);
-    console.log(userData)
+    const userData = await User.findById(req.cookies.userId)
     if (userData) {
       user = {
         id: userData._id,

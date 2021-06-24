@@ -68,13 +68,21 @@ const createEmployee = async (req, res) => {
 
 const getEmployeeById = async (req, res) => {
   const id = req.params.id.toString();
-  try {
-    const employee = await User.findById(id);
-    return res.status(200).json(employee);
-  } catch (error) {
-    console.error(error);
-    return res.status(402).send("employee not found");
-  }
+    try {
+        const employee = await User.findById(id)
+            .populate("profession")
+            .populate({
+                path: "jobs",
+                populate: {
+                    path: "client",
+                    model: "User",
+                },
+            });
+        return res.status(200).json(employee);
+    } catch (error) {
+        console.error(error);
+        return res.status(402).send("employee not found");
+    }
 };
 
 const updateEmployee = async (req, res) => {
