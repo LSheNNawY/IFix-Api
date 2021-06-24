@@ -208,7 +208,7 @@ const verifyPassword = async (req, res) => {
 
 const isLoggedIn = (req, res) => {
   try {
-    const token = req.cookie.token;
+    const token = req.cookies.token;
     if (!token) {
       return res.json(false);
     }
@@ -234,6 +234,27 @@ const logout = (req, res) => {
   res.send();
 };
 
+const getCurrentUser = async (req, res) => {
+  let user = {};
+  try {
+    const userData = await User.findById(req.cookies.userId);
+    if (userData) {
+      user = {
+        id: userData._id,
+        username: userData.firstName + " " + userData.lastName,
+        email: userData.email,
+        address: userData.address,
+        role: userData.role,
+        picture: userData.picture,
+      };
+    }
+
+    res.status(200).json(user);
+  } catch (err) {
+    res.send(err);
+  }
+};
+
 module.exports = {
   createUser,
   getAll,
@@ -246,4 +267,5 @@ module.exports = {
   verifyPassword,
   isLoggedIn,
   logout,
+  getCurrentUser,
 };
