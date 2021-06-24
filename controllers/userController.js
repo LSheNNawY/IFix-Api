@@ -238,12 +238,12 @@ const getCurrentUser = async (req, res) => {
   let user = {};
   try {
     const userData = await User.findById(req.cookies.userId);
-    console.log(userData)
     if (userData) {
       user = {
         id: userData._id,
         username: userData.firstName + " " + userData.lastName,
         email: userData.email,
+        address: userData.address,
         role: userData.role,
         picture: userData.picture,
       };
