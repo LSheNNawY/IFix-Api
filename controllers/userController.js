@@ -3,10 +3,6 @@ const bcrypt = require("bcrypt");
 const { mail } = require("../helpers/mail");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
-const stripScretKey = process.env.STRIPE_SECRET_KEY;
-
-const stripe = require('stripe')(stripScretKey)
-
 /**
  * get all users function
  * @param req
@@ -14,7 +10,7 @@ const stripe = require('stripe')(stripScretKey)
  * @returns {Promise<void>}
  */
 
-const getAll = async(req, res) => {
+const getAll = async (req, res) => {
     try {
         const users = await User.find({ role: "user" });
         return res.status(200).json(users);
@@ -31,9 +27,9 @@ const getAll = async(req, res) => {
  * @returns {Promise<void>}
  */
 
-const createUser = async(req, res) => {
+const createUser = async (req, res) => {
     const { firstName, lastName, email, password, phone, address, dateOfBirth } =
-    req.body;
+        req.body;
     let picture;
     if (req.file) picture = req.file.filename;
 
@@ -76,7 +72,7 @@ const createUser = async(req, res) => {
     }
 };
 
-const getUserById = async(req, res) => {
+const getUserById = async (req, res) => {
     const id = req.params.id.toString();
     try {
         const user = await User.findById(id);
@@ -87,7 +83,7 @@ const getUserById = async(req, res) => {
     }
 };
 
-const updateUser = async(req, res) => {
+const updateUser = async (req, res) => {
     const id = req.params.id.toString();
     const { error } = userValidation.validate(req.body);
     if (error) {
@@ -102,7 +98,7 @@ const updateUser = async(req, res) => {
     }
 };
 
-const blockUser = async(req, res) => {
+const blockUser = async (req, res) => {
     const id = req.params.id.toString();
     try {
         await User.findOneAndUpdate({ _id: id }, { status: "blocked" });
@@ -113,7 +109,7 @@ const blockUser = async(req, res) => {
     }
 };
 
-const unblockUser = async(req, res) => {
+const unblockUser = async (req, res) => {
     const id = req.params.id.toString();
     try {
         await User.findOneAndUpdate({ _id: id }, { status: "active" });
@@ -126,7 +122,7 @@ const unblockUser = async(req, res) => {
     }
 };
 
-const deleteUser = async(req, res) => {
+const deleteUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (user) {
@@ -140,7 +136,7 @@ const deleteUser = async(req, res) => {
     }
 };
 
-const login = async(req, res) => {
+const login = async (req, res) => {
     const { email, password } = req.body;
     const data = {};
     console.log(req.body);
@@ -179,7 +175,7 @@ const login = async(req, res) => {
                     expires: expirationTime,
                 });
 
-                return res.status(200).json({...data });
+                return res.status(200).json({ ...data });
             }
             return res.status(401).json({ error: "Invalid credentials" });
         });
@@ -190,7 +186,7 @@ const login = async(req, res) => {
     }
 };
 
-const verifyPassword = async(req, res) => {
+const verifyPassword = async (req, res) => {
     const { userId, password } = req.body;
     console.log(req.body);
     try {
@@ -238,16 +234,16 @@ const logout = (req, res) => {
     res.send();
 };
 
-const getCurrentUser = async(req, res) => {
+const getCurrentUser = async (req, res) => {
     let user = {};
     try {
         const userData = await User.findById(req.cookies.userId);
-        console.log(userData)
         if (userData) {
             user = {
                 id: userData._id,
                 username: userData.firstName + " " + userData.lastName,
                 email: userData.email,
+                address: userData.address,
                 role: userData.role,
                 picture: userData.picture,
             };
@@ -262,94 +258,6 @@ const getCurrentUser = async(req, res) => {
     }
 };
 
-
-
-const payment = async(req, res) => {
-
-    // var param = {};
-    // param.card = {
-    //     number: req.body.number,
-    //     exp_month: 2,
-    //     exp_year: 2024,
-    //     cvc: '212'
-    // }
-
-    // stripe.tokens.create(param, function(err, token) {
-    //     if (err) {
-    //         console.log("err: " + err);
-    //     }
-    //     if (token) {
-    //         console.log("success: " + JSON.stringify(token, null, 2));
-    //     } else {
-    //         console.log("Something wrong")
-    //     }
-    // })
-
-
-
-
-    const amount = 2500;
-
-    try {
-        const charge = await stripe.charges.create({
-            amount: req.body.amount,
-            currency: 'usd',
-            source: req.body.source,
-            description: 'My First Test Charge (created for API docs)',
-        });
-        res.status(200).json(charge);
-
-    } catch (err) {
-        console.log(err)
-    }
-
-
-
-
-
-    // let { price, id } = req.body;
-    // console.log(req.body.source.number)
-    // try {
-    //     stripe.customers.create({
-    //             name: req.body.name,
-    //             email: req.body.email,
-    //             source: req.body.stripeToken
-    //         }).then(customer => stripe.charges.create({
-    //             amount: req.body.amount,
-    //             currency: 'usd',
-    //         })).then(() => {
-    //             console.log("customer")
-    //         })
-    //         .catch(err => console.log(err))
-    // } catch (err) { res.send(err) }
-
-
-
-
-    //   stripe.customers.create({
-    //     email: req.body.email,
-    //     source: {
-    //         object: 'card',
-    //         exp_month: req.body.exp_month,
-    //         exp_year: req.body.exp_month,
-    //         number: req.body.number,
-    //         cvc: req.body.cvc
-    //     }
-    // }).then(function(customer) {
-    //     return stripe.charges.create({
-    //         amount: req.body.amount,
-    //         currency: 'usd',
-    //         customer: customer.id
-    //     });
-    // }).then(() => {
-    //     console.log("done")
-    // })
-
-
-
-}
-
-
 module.exports = {
     createUser,
     getAll,
@@ -363,5 +271,4 @@ module.exports = {
     isLoggedIn,
     logout,
     getCurrentUser,
-    payment
 };
