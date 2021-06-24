@@ -61,6 +61,7 @@ const createUser = async (req, res) => {
     const saved = await newUser.save();
     if (saved) {
       await mail({
+        from: `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`,
         to: email,
         html: `<h2>You have registered</h2>`,
         subject: "IFix registeratin",
