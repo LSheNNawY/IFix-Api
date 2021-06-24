@@ -14,6 +14,7 @@ const getAllAdmins = async (req, res) => {
 };
 
 const createAdmin = async (req, res) => {
+    console.log(req);
     const {
         firstName,
         lastName,
@@ -69,9 +70,11 @@ const getAdminById = async (req, res) => {
 };
 
 const updateAdmin = async (req, res) => {
+    console.log(req.body)
     const id = req.params.id.toString();
     const { error } = userValidation.validate(req.body);
     if (error) {
+        console.error(error);
         return res.status(402).send(error.details[0].message);
     }
     try {
