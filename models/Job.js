@@ -22,8 +22,13 @@ const jobSchema = new mongoose.Schema(
             default: 0,
 
         },
-        description: {
-            type: String
+        service: {
+            type: String,
+            required: true
+        },
+        address: {
+            type: String,
+            required: true
         },
         price: {
             type: Number,
@@ -34,11 +39,6 @@ const jobSchema = new mongoose.Schema(
             enum: ["Cash on delivery", "Credit Card"],
             default: "Cash on delivery",
         },
-        // service: {
-        //     type: Schema.Types.ObjectId,
-        //     ref: "Service",
-        //     required: true
-        // },
         review: {
             rate: {
                 type: Number,

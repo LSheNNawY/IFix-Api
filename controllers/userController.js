@@ -243,11 +243,12 @@ const getCurrentUser = async (req, res) => {
         id: userData._id,
         username: userData.firstName + " " + userData.lastName,
         email: userData.email,
+        address: userData.address,
         role: userData.role,
         picture: userData.picture,
       };
 
-      res.status(200).json(user);
+      return res.status(200).json(user);
     }
 
     res.send(undefined)
