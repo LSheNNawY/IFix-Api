@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const {Schema} = require("mongoose");
+const { Schema } = require("mongoose");
 const jobSchema = new mongoose.Schema(
     {
         client: {
@@ -20,15 +20,14 @@ const jobSchema = new mongoose.Schema(
         warranty: {
             type: Number,
             default: 0,
-
         },
         service: {
             type: String,
-            required: true
+            required: true,
         },
         address: {
             type: String,
-            required: true
+            required: true,
         },
         price: {
             type: Number,
@@ -43,31 +42,21 @@ const jobSchema = new mongoose.Schema(
             rate: {
                 type: Number,
                 min: 1,
-                max: 5
+                max: 5,
             },
             comment: {
                 type: String,
             },
         },
         started_at: {
-            date: {
-                type: String
-            },
-            time: {
-                type: String
-            }
+            type: String,
         },
         ended_at: {
-            date: {
-                type: String
-            },
-            time: {
-                type: String
-            }
-        }
+            type: String,
+        },
     },
 
-    {timestamps: {createdAt: "created_at"}}
+    { timestamps: { createdAt: "created_at" } }
 );
 const Job = mongoose.model("Job", jobSchema);
 
