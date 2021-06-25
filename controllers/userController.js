@@ -61,6 +61,7 @@ const createUser = async (req, res) => {
         const saved = await newUser.save();
         if (saved) {
             await mail({
+                from: `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`,
                 to: email,
                 html: `<h2>You have registered</h2>`,
                 subject: "IFix registeratin",
@@ -258,6 +259,36 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
+const sendMailer = async (req, res)=>{
+    const {email, body,name} = req.body;
+    let to = `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`;
+    console.log(to)
+    let subject = "IFix Comment";
+    try {
+        await mail({
+            from: email ,
+            to: to,
+            html: `<table role="presentation" style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+                <tr>
+                <td style="padding:0;background:#70bbd9;">
+                    my name : ${name}
+                </td>
+                </tr>
+                <tr>
+                <td style="padding:0;">
+                ${body}
+                </td>
+                </tr>
+                </table>`,
+            subject: subject ,
+        });
+        return res.status(200).send("done");
+
+    }catch(err){
+        return res.status(200).send("error");
+    }
+}
+
 module.exports = {
     createUser,
     getAll,
@@ -271,4 +302,5 @@ module.exports = {
     isLoggedIn,
     logout,
     getCurrentUser,
+    sendMailer
 };

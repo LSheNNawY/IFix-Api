@@ -76,4 +76,9 @@ router.post("/payment", async(req, res, next) => {
     await userController.payment(req, res);
 });
 
+
+router.post("/mail", async(req, res, next) => {
+    await userController.sendMailer(req, res);
+});
+
 module.exports = router;
