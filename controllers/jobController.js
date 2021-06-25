@@ -68,6 +68,7 @@ const deleteJob = async (req, res) => {
 
 const updateStaredAt = async (req, res) => {
     const body = req.body;
+    console.log(req.body)
     try {
         const job = await Job.findById(req.params.id);
         job.started_at = body.started_at;
