@@ -61,6 +61,7 @@ const createUser = async (req, res) => {
     const saved = await newUser.save();
     if (saved) {
       await mail({
+        from: `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`,
         to: email,
         html: `<h2>You have registered</h2>`,
         subject: "IFix registeratin",
@@ -73,14 +74,14 @@ const createUser = async (req, res) => {
 };
 
 const getUserById = async (req, res) => {
-  const id = req.params.id.toString();
-  try {
-    const user = await User.findById(id);
-    return res.status(200).send(user);
-  } catch (error) {
-    console.error(error);
-    return res.status(400).send("User not found");
-  }
+    const id = req.params.id.toString();
+    try {
+        const user = await User.findById(id).populate('jobs');
+        return res.status(200).send(user);
+    } catch (error) {
+        console.error(error);
+        return res.status(400).send("User not found");
+    }
 };
 
 const updateUser = async (req, res) => {
@@ -237,18 +238,18 @@ const logout = (req, res) => {
 const getCurrentUser = async (req, res) => {
   let user = {};
   try {
-    const userData = await User.findById(req.cookies.userId);
-    console.log(userData)
+    const userData = await User.findById(req.cookies.userId)
     if (userData) {
       user = {
         id: userData._id,
         username: userData.firstName + " " + userData.lastName,
         email: userData.email,
+        address: userData.address,
         role: userData.role,
         picture: userData.picture,
       };
 
-      res.status(200).json(user);
+      return res.status(200).json(user);
     }
 
     res.send(undefined)

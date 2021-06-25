@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-async function mail({to, html, subject}) {
+async function mail({from, to, html, subject}) {
     try {
         let transporter = nodemailer.createTransport({
             host: 'smtp.gmail.com',
@@ -13,7 +13,7 @@ async function mail({to, html, subject}) {
         });
 
         let info = await transporter.sendMail({
-            from: `IFix < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`,
+            from: from,
             to: to,
             subject: subject,
             html: html,
