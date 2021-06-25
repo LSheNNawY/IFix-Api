@@ -19,8 +19,10 @@ const getAll = async (req, res) => {
     const userId = req.query.userId;
     try {
         if (userId) {
-            const id = mongoose.Types.ObjectId(userId)
-            const jobs = await Job.find({$or: [{'client': id}, {'employee': id}]})
+            const id = mongoose.Types.ObjectId(userId);
+            const jobs = await Job.find({
+                $or: [{ client: id }, { employee: id }],
+            })
                 .populate("client")
                 .populate("employee")
                 .populate("profession");
@@ -68,8 +70,7 @@ const updateStaredAt = async (req, res) => {
     const body = req.body;
     try {
         const job = await Job.findById(req.params.id);
-        job.started_at.date = body.started_at.date;
-        job.started_at.time = body.started_at.time;
+        job.started_at = body.started_at;
         job.save();
         return res.json({ ok: true });
     } catch (err) {
@@ -81,8 +82,19 @@ const updateEndedAt = async (req, res) => {
     const body = req.body;
     try {
         const job = await Job.findById(req.params.id);
-        job.ended_at.date = body.ended_at.date;
-        job.ended_at.time = body.ended_at.time;
+        job.ended_at = body.ended_at;
+        job.save();
+        return res.json({ ok: true });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+const updatePrice = async (req, res) => {
+    const body = req.body;
+    try {
+        const job = await Job.findById(req.params.id);
+        job.price = body.price;
         job.save();
         return res.json({ ok: true });
     } catch (err) {
@@ -139,6 +151,7 @@ module.exports = {
     updateEndedAt,
     updateDescription,
     updateReview,
+    updatePrice,
     // getJobById
     // deleteReview
 };
