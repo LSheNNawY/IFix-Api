@@ -16,12 +16,23 @@ const createJob = async (req, res) => {
 };
 
 const getAll = async (req, res) => {
+    const userId = req.query.userId;
     try {
-        const job = await Job.find({})
+        if (userId) {
+            const id = mongoose.Types.ObjectId(userId)
+            const jobs = await Job.find({$or: [{'client': id}, {'employee': id}]})
+                .populate("client")
+                .populate("employee")
+                .populate("profession");
+
+            return res.status(200).json(jobs);
+        }
+        const jobs = await Job.find({})
             .populate("client")
             .populate("employee")
-            .populate("profession")
-        return res.status(200).json(job);
+            .populate("profession");
+
+        return res.status(200).json(jobs);
     } catch (err) {
         console.log(err);
         return res.status(400).send("fail");
@@ -44,73 +55,72 @@ const deleteJob = async (req, res) => {
         const job = await Job.findById(req.params.id);
         if (job) {
             await job.remove();
-            return res.status(200).json({message: "job deleted"});
+            return res.status(200).json({ message: "job deleted" });
         }
-        return res.status(404).json({message: "error deleting job!"});
+        return res.status(404).json({ message: "error deleting job!" });
     } catch (err) {
         console.log(err);
         return res.status(400).send("fail");
     }
 };
 
-
 const updateStaredAt = async (req, res) => {
     const body = req.body;
     try {
-        const job = await Job.findById(req.params.id)
+        const job = await Job.findById(req.params.id);
         job.started_at.date = body.started_at.date;
         job.started_at.time = body.started_at.time;
         job.save();
-        return res.json({"ok": true})
+        return res.json({ ok: true });
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
-}
+};
 
 const updateEndedAt = async (req, res) => {
     const body = req.body;
     try {
-        const job = await Job.findById(req.params.id)
+        const job = await Job.findById(req.params.id);
         job.ended_at.date = body.ended_at.date;
         job.ended_at.time = body.ended_at.time;
         job.save();
-        return res.json({"ok": true})
+        return res.json({ ok: true });
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
-}
+};
 
 const updateDescription = async (req, res) => {
     const body = req.body;
     try {
-        const job = await Job.findById(req.params.id)
+        const job = await Job.findById(req.params.id);
         if (JSON.stringify(job.started_at) === "{}") {
             job.description = body.description;
             job.save();
-            return res.json({"ok": true})
+            return res.json({ ok: true });
         }
-        return res.status(500).json({'ok': false})
+        return res.status(500).json({ ok: false });
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
-}
+};
 
 const updateReview = async (req, res) => {
     const body = req.body;
     console.log(req.body);
     try {
-        const job = await Job.findById(req.params.id)
+        const job = await Job.findById(req.params.id);
         if (JSON.stringify(job.ended_at) !== "{}") {
             job.review.rate = body.review.rate;
             job.review.comment = body.review.comment;
             job.save();
             return res.json(job)
         }
-        return res.status(500).json({'ok': false})
+        return res.status(500).json({ ok: false });
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
-}
+};
 
 // const deleteReview = async (req, res) => {
 //     try {
@@ -120,7 +130,6 @@ const updateReview = async (req, res) => {
 //         console.log(err)
 //     }
 // }
-
 
 module.exports = {
     createJob,
