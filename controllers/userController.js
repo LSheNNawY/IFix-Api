@@ -43,6 +43,10 @@ const createUser = async (req, res) => {
   if (userExists) {
     return res.status(400).send("email is already registered");
   }
+  const phoneExists = await User.findOne({ phone });
+  if (phoneExists) {
+    return res.status(400).send("phone is already exist");
+  }
 
   const salt = await bcrypt.genSalt();
   const passwordHash = await bcrypt.hash(password, salt);

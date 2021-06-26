@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: [true, "Phone is required"],
             match: [/^01[0125][0-9]{8}$/gm, "Please fill a valid phone number"],
+            unique: true,
         },
         passwordHash: {
             type: String,
