@@ -29,7 +29,6 @@ app.use(cookieParser());
 // const stripScretKey = process.env.STRIPE_SECRET_KEY;
 // const stripPublicKey = process.env.STRIPE_PUBLIC_KEY;
 
-// console.log(stripScretKey, stripPublicKey)
 
 app.use(cors({
     origin: process.env.CLIENT_ORIGIN,

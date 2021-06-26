@@ -1,8 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const { mail } = require("../helpers/mail");
+const {mail} = require("../helpers/mail");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
+const Job = require("../models/Job");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 /**
  * get all users function
  * @param req
@@ -12,7 +15,7 @@ const userValidation = require("../helpers/userValidation");
 
 const getAll = async (req, res) => {
     try {
-        const users = await User.find({ role: "user" });
+        const users = await User.find({role: "user"});
         return res.status(200).json(users);
     } catch (error) {
         console.log(error);
@@ -28,18 +31,18 @@ const getAll = async (req, res) => {
  */
 
 const createUser = async (req, res) => {
-    const { firstName, lastName, email, password, phone, address, dateOfBirth } =
+    const {firstName, lastName, email, password, phone, address, dateOfBirth} =
         req.body;
     let picture;
     if (req.file) picture = req.file.filename;
 
-    const { error } = userValidation.validate(req.body);
+    const {error} = userValidation.validate(req.body);
     if (error) {
         console.log(error);
         return res.status(400).send(error.details[0].message);
     }
 
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({email});
     if (userExists) {
         return res.status(400).send("email is already registered");
     }
@@ -86,12 +89,12 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const id = req.params.id.toString();
-    const { error } = userValidation.validate(req.body);
+    const {error} = userValidation.validate(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
     try {
-        await User.findOneAndUpdate({ _id: id }, req.body);
+        await User.findOneAndUpdate({_id: id}, req.body);
         return res.status(200).send("Updated Successfully");
     } catch (error) {
         console.error(error);
@@ -102,8 +105,8 @@ const updateUser = async (req, res) => {
 const blockUser = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        await User.findOneAndUpdate({ _id: id }, { status: "blocked" });
-        return res.status(200).json({ message: "User blocked", status: "blocked" });
+        await User.findOneAndUpdate({_id: id}, {status: "blocked"});
+        return res.status(200).json({message: "User blocked", status: "blocked"});
     } catch (error) {
         console.error(error);
         return res.status(402).send("Error blocking user");
@@ -113,10 +116,10 @@ const blockUser = async (req, res) => {
 const unblockUser = async (req, res) => {
     const id = req.params.id.toString();
     try {
-        await User.findOneAndUpdate({ _id: id }, { status: "active" });
+        await User.findOneAndUpdate({_id: id}, {status: "active"});
         return res
             .status(200)
-            .json({ message: "User unblocked", status: "active" });
+            .json({message: "User unblocked", status: "active"});
     } catch (error) {
         console.error(error);
         return res.status(402).send("Error blocking user");
@@ -128,9 +131,9 @@ const deleteUser = async (req, res) => {
         const user = await User.findById(req.params.id);
         if (user) {
             await user.remove();
-            return res.status(200).json({ message: "Delete user done" });
+            return res.status(200).json({message: "Delete user done"});
         }
-        return res.status(400).json({ message: "Error deleting user" });
+        return res.status(400).json({message: "Error deleting user"});
     } catch (error) {
         console.log(error);
         return res.status(400).send("error in delete user");
@@ -138,14 +141,14 @@ const deleteUser = async (req, res) => {
 };
 
 const login = async (req, res) => {
-    const { email, password } = req.body;
+    const {email, password} = req.body;
     const data = {};
     console.log(req.body);
 
     try {
-        const user = await User.findOne({ email: email });
+        const user = await User.findOne({email: email});
         if (!user) {
-            return res.status(401).json({ error: "invalid credentials" });
+            return res.status(401).json({error: "invalid credentials"});
         }
         bcrypt.compare(password, user.passwordHash, (err, matched) => {
             if (matched) {
@@ -156,7 +159,7 @@ const login = async (req, res) => {
                 data.picture = user.picture;
                 data.created_at = user.created_at;
 
-                const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
+                const token = jwt.sign({email: user.email}, process.env.SECRET_KEY);
                 const expirationTime = new Date(
                     Date.now() + parseInt(process.env.JWT_EXPIRATION)
                 );
@@ -176,9 +179,9 @@ const login = async (req, res) => {
                     expires: expirationTime,
                 });
 
-                return res.status(200).json({ ...data });
+                return res.status(200).json({...data});
             }
-            return res.status(401).json({ error: "Invalid credentials" });
+            return res.status(401).json({error: "Invalid credentials"});
         });
     } catch (err) {
         res.status(401).json({
@@ -188,12 +191,12 @@ const login = async (req, res) => {
 };
 
 const verifyPassword = async (req, res) => {
-    const { userId, password } = req.body;
+    const {userId, password} = req.body;
     console.log(req.body);
     try {
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(400).json({ error: "User not found " });
+            return res.status(400).json({error: "User not found "});
         }
         bcrypt.compare(password, user.passwordHash, (err, matched) => {
             if (matched) {
@@ -259,14 +262,39 @@ const getCurrentUser = async (req, res) => {
     }
 };
 
-const sendMailer = async (req, res)=>{
-    const {email, body,name} = req.body;
+
+const payment = async (req, res) => {
+    const {amount, job_id, id} = req.body
+    try {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount,
+            currency: "USD",
+            description: "Your Company Description",
+            payment_method: id,
+            confirm: true,
+        });
+        console.log("stripe-routes.js 19 | payment", paymentIntent);
+        const job = await Job.findById(job_id);
+        job.price = amount;
+        job.payment_method = "Credit Card";
+        job.ended_at = new Date();
+        job.save();
+        console.log(job)
+        return res.status(200).json({paymentIntent,job});
+    } catch (err) {
+        res.send(err);
+    }
+};
+
+
+const sendMailer = async (req, res) => {
+    const {email, body, name} = req.body;
     let to = `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`;
     console.log(to)
     let subject = "IFix Comment";
     try {
         await mail({
-            from: email ,
+            from: email,
             to: to,
             html: `<table role="presentation" style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
                 <tr>
@@ -280,11 +308,11 @@ const sendMailer = async (req, res)=>{
                 </td>
                 </tr>
                 </table>`,
-            subject: subject ,
+            subject: subject,
         });
         return res.status(200).send("done");
 
-    }catch(err){
+    } catch (err) {
         return res.status(200).send("error");
     }
 }
@@ -302,5 +330,6 @@ module.exports = {
     isLoggedIn,
     logout,
     getCurrentUser,
+    payment,
     sendMailer
 };
