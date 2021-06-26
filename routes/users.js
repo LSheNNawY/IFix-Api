@@ -42,12 +42,12 @@ router.post("/users/login", async (req, res, next) => {
 });
 
 router.post("/users/logout", auth, async (req, res, next) => {
-  console.log("logout");
+  //console.log("logout");
   /* res.clearCookie("token");
   res.clearCookie("user_id");
   res.clearCookie("username"); */
   await userController.logout(req, res);
-  console.log("logoutttttt");
+ 
 
 });
 
