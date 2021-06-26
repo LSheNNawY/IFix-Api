@@ -42,9 +42,13 @@ router.post("/users/login", async (req, res, next) => {
 });
 
 router.post("/users/logout", auth, async (req, res, next) => {
-  res.clearCookie("token");
+  console.log("logout");
+  /* res.clearCookie("token");
   res.clearCookie("user_id");
-  res.clearCookie("username");
+  res.clearCookie("username"); */
+  await userController.logout(req, res);
+  console.log("logoutttttt");
+
 });
 
 router.get("/users/current-user", async (req, res) => {

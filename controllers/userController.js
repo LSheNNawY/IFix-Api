@@ -222,6 +222,7 @@ const isLoggedIn = (req, res) => {
 };
 
 const logout = (req, res) => {
+  console.log("res")
   res.cookie("token", "", {
     httpOnly: true,
     expires: new Date(0),
