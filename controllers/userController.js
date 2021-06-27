@@ -39,12 +39,17 @@ const createUser = async (req, res) => {
   const { error } = userValidation.validate(req.body);
   if (error) {
     console.log(error);
-    return res.status(400).send(error.details[0].message);
+    return res.status(400).send({ error:  error.details[0].message });
   }
 
-  const userExists = await User.findOne({ email });
-  if (userExists) {
-    return res.status(400).send("email is already registered");
+  const emailExists = await User.findOne({ email });
+  if (emailExists) {
+    return res.status(400).send({ error: "email" });
+  }
+
+  const phoneExists = await User.findOne({ phone });
+  if (phoneExists) {
+    return res.status(400).send({ error: "phone" });
   }
 
   const salt = await bcrypt.genSalt();
@@ -319,6 +324,7 @@ const sendMailer = async (req, res) => {
     return res.status(200).send("error");
   }
 };
+
 
 module.exports = {
   createUser,
