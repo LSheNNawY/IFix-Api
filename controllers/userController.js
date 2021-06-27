@@ -1,10 +1,11 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const {mail} = require("../helpers/mail");
+// const {mail} = require("../helpers/mail");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 const Job = require("../models/Job");
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const {createAndSendConfirmationTokenMail} = require('../controllers/authenticationController')
 
 /**
  * get all users function
@@ -31,8 +32,7 @@ const getAll = async (req, res) => {
  */
 
 const createUser = async (req, res) => {
-    const {firstName, lastName, email, password, phone, address, dateOfBirth} =
-        req.body;
+    const {firstName, lastName, email, password, phone, address, dateOfBirth} = req.body;
     let picture;
     if (req.file) picture = req.file.filename;
 
@@ -63,12 +63,13 @@ const createUser = async (req, res) => {
     try {
         const saved = await newUser.save();
         if (saved) {
-            await mail({
-                from: `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`,
-                to: email,
-                html: `<h2>You have registered</h2>`,
-                subject: "IFix registeratin",
-            });
+            // await mail({
+            //     from: `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`,
+            //     to: email,
+            //     html: `<h2>You have registered</h2>`,
+            //     subject: "IFix registeratin",
+            // });
+            await createAndSendConfirmationTokenMail(email)
             return res.status(200).send(newUser);
         }
     } catch (error) {
@@ -143,7 +144,6 @@ const deleteUser = async (req, res) => {
 const login = async (req, res) => {
     const {email, password} = req.body;
     const data = {};
-    console.log(req.body);
 
     try {
         const user = await User.findOne({email: email});

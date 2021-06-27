@@ -1,6 +1,5 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 
 const getAllAdmins = async (req, res) => {
