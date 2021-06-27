@@ -45,6 +45,7 @@ router.post("/users/logout", auth, async (req, res, next) => {
   res.clearCookie("token");
   res.clearCookie("user_id");
   res.clearCookie("username");
+  await userController.logout(req, res);
 });
 
 router.get("/users/current-user", async (req, res) => {

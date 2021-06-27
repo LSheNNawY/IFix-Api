@@ -256,6 +256,7 @@ const getCurrentUser = async (req, res) => {
 
   } catch (err) {
     res.send(err);
+    
   }
 };
 
