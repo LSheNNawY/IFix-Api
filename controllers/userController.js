@@ -255,7 +255,7 @@ const getCurrentUser = async (req, res) => {
             return res.status(200).json(user);
         }
 
-        res.send(undefined)
+        return res.send(undefined)
 
     } catch (err) {
         res.send(err);
@@ -279,7 +279,6 @@ const payment = async (req, res) => {
         job.payment_method = "Credit Card";
         job.ended_at = new Date();
         job.save();
-        console.log(job)
         return res.status(200).json({paymentIntent,job});
     } catch (err) {
         res.send(err);
