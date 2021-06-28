@@ -39,17 +39,17 @@ const createUser = async (req, res) => {
   const { error } = userValidation.validate(req.body);
   if (error) {
     console.log(error);
-    return res.status(400).send({ error:  error.details[0].message });
+    return res.status(400).json({ error:  error.details[0].message });
   }
 
   const emailExists = await User.findOne({ email });
   if (emailExists) {
-    return res.status(400).send({ error: "email" });
+    return res.status(400).json({ error: "email" });
   }
 
   const phoneExists = await User.findOne({ phone });
   if (phoneExists) {
-    return res.status(400).send({ error: "phone" });
+    return res.status(400).json({ error: "phone" });
   }
 
   const salt = await bcrypt.genSalt();
