@@ -1,10 +1,10 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const { mail } = require("../helpers/mail");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 const Job = require("../models/Job");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const {createAndSendConfirmationTokenMail} = require('../controllers/authenticationController')
 
 /**
  * get all users function
@@ -52,33 +52,28 @@ const createUser = async (req, res) => {
     return res.status(400).json({ error: "phone" });
   }
 
-  const salt = await bcrypt.genSalt();
-  const passwordHash = await bcrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
 
-  const newUser = new User({
-    firstName,
-    lastName,
-    email,
-    passwordHash,
-    phone,
-    address,
-    dateOfBirth,
-    picture,
-  });
-  try {
-    const saved = await newUser.save();
-    if (saved) {
-      await mail({
-        from: `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`,
-        to: email,
-        html: `<h2>You have registered</h2>`,
-        subject: "IFix registeratin",
-      });
-      return res.status(200).send(newUser);
+    const newUser = new User({
+        firstName,
+        lastName,
+        email,
+        passwordHash,
+        phone,
+        address,
+        dateOfBirth,
+        picture,
+    });
+    try {
+        const saved = await newUser.save();
+        if (saved) {
+            await createAndSendConfirmationTokenMail(email, "register-confirmation")
+            return res.status(200).send(newUser);
+        }
+    } catch (error) {
+        console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
 };
 
 const getUserById = async (req, res) => {
@@ -148,12 +143,19 @@ const deleteUser = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   const data = {};
-  console.log(req.body);
 
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(401).json({ error: "invalid credentials" });
+      return res.status(401).json({ error: "wrong" });
+    }
+
+    if (user.status === "pending activation") {
+        return res.status(401).json({ error: "inactive" });
+    }
+
+    if (user.status === "blocked") {
+        return res.status(401).json({ error: "blocked" });
     }
     bcrypt.compare(password, user.passwordHash, (err, matched) => {
       if (matched) {
@@ -191,7 +193,7 @@ const login = async (req, res) => {
 
         return res.status(200).json({ ...data });
       }
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "wrong" });
     });
   } catch (err) {
     res.status(401).json({

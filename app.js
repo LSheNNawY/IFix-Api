@@ -14,6 +14,7 @@ const jobsRouter = require('./routes/jobs');
 const userRouter = require('./routes/users');
 const adminsRouter = require('./routes/admins');
 const employeeRouter = require('./routes/employees');
+const authenticationRouter = require('./routes/authentication')
 const app = express();
 
 // view engine setup
@@ -25,11 +26,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-
-// const stripScretKey = process.env.STRIPE_SECRET_KEY;
-// const stripPublicKey = process.env.STRIPE_PUBLIC_KEY;
-
-
 app.use(cors({
     origin: process.env.CLIENT_ORIGIN,
     credentials: true
@@ -38,7 +34,7 @@ app.use(cors({
 app.use(express.static(path.join(__dirname, './public/')));
 
 app.use('/', indexRouter);
-app.use('/api', [professionRouter, jobsRouter, userRouter, adminsRouter, employeeRouter]);
+app.use('/api', [professionRouter, jobsRouter, userRouter, adminsRouter, employeeRouter, authenticationRouter]);
 
 
 // catch 404 and forward to error handler
@@ -55,7 +51,7 @@ app.use(function(err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.send('error');
 });
 
 module.exports = app;
