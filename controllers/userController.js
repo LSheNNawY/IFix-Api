@@ -312,7 +312,7 @@ const sendMailer = async (req, res) => {
         return res.status(200).send("done");
 
     } catch (err) {
-        return res.status(200).send("error");
+        return res.status(500).send("error");
     }
 }
 
