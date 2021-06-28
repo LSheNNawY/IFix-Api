@@ -31,25 +31,26 @@ const getAll = async (req, res) => {
  */
 
 const createUser = async (req, res) => {
-    const {firstName, lastName, email, password, phone, address, dateOfBirth} = req.body;
-    let picture;
-    if (req.file) picture = req.file.filename;
+  const { firstName, lastName, email, password, phone, address, dateOfBirth } =
+    req.body;
+  let picture;
+  if (req.file) picture = req.file.filename;
 
-    const {error} = userValidation.validate(req.body);
-    if (error) {
-        console.log(error);
-        return res.status(400).send(error.details[0].message);
-    }
+  const { error } = userValidation.validate(req.body);
+  if (error) {
+    console.log(error);
+    return res.status(400).json({ error:  error.details[0].message });
+  }
 
-    const userExists = await User.findOne({email});
-    if (userExists) {
-        return res.status(400).send("email is already registered");
-    }
+  const emailExists = await User.findOne({ email });
+  if (emailExists) {
+    return res.status(400).json({ error: "email" });
+  }
 
-    const phoneExists = await User.findOne({ phone });
-    if (phoneExists) {
-      return res.status(400).send({ error: "phone" });
-    }
+  const phoneExists = await User.findOne({ phone });
+  if (phoneExists) {
+    return res.status(400).json({ error: "phone" });
+  }
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
