@@ -142,12 +142,19 @@ const deleteUser = async (req, res) => {
 const login = async (req, res) => {
   const { email, password } = req.body;
   const data = {};
-  console.log(req.body);
 
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
-      return res.status(401).json({ error: "invalid credentials" });
+      return res.status(401).json({ error: "wrong" });
+    }
+
+    if (user.status === "pending activation") {
+        return res.status(401).json({ error: "inactive" });
+    }
+
+    if (user.status === "blocked") {
+        return res.status(401).json({ error: "blocked" });
     }
     bcrypt.compare(password, user.passwordHash, (err, matched) => {
       if (matched) {
@@ -185,7 +192,7 @@ const login = async (req, res) => {
 
         return res.status(200).json({ ...data });
       }
-      return res.status(401).json({ error: "Invalid credentials" });
+      return res.status(401).json({ error: "wrong" });
     });
   } catch (err) {
     res.status(401).json({
