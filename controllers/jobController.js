@@ -127,7 +127,7 @@ const updateReview = async (req, res) => {
             job.review.rate = body.review.rate;
             job.review.comment = body.review.comment;
             job.save();
-            return res.json(job);
+            return res.json(job)
         }
         return res.status(500).json({ ok: false });
     } catch (err) {
