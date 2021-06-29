@@ -3,8 +3,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 const Job = require("../models/Job");
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const {createAndSendConfirmationTokenMail} = require('../controllers/authenticationController')
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const {
+  createAndSendConfirmationTokenMail,
+} = require("../controllers/authenticationController");
 
 /**
  * get all users function
@@ -39,7 +41,7 @@ const createUser = async (req, res) => {
   const { error } = userValidation.validate(req.body);
   if (error) {
     console.log(error);
-    return res.status(400).json({ error:  error.details[0].message });
+    return res.status(400).json({ error: error.details[0].message });
   }
 
   const emailExists = await User.findOne({ email });
@@ -52,28 +54,28 @@ const createUser = async (req, res) => {
     return res.status(400).json({ error: "phone" });
   }
 
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
+  const salt = await bcrypt.genSalt();
+  const passwordHash = await bcrypt.hash(password, salt);
 
-    const newUser = new User({
-        firstName,
-        lastName,
-        email,
-        passwordHash,
-        phone,
-        address,
-        dateOfBirth,
-        picture,
-    });
-    try {
-        const saved = await newUser.save();
-        if (saved) {
-            await createAndSendConfirmationTokenMail(email, "register-confirmation")
-            return res.status(200).send(newUser);
-        }
-    } catch (error) {
-        console.error(error);
+  const newUser = new User({
+    firstName,
+    lastName,
+    email,
+    passwordHash,
+    phone,
+    address,
+    dateOfBirth,
+    picture,
+  });
+  try {
+    const saved = await newUser.save();
+    if (saved) {
+      await createAndSendConfirmationTokenMail(email, "register-confirmation");
+      return res.status(200).send(newUser);
     }
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const getUserById = async (req, res) => {
@@ -151,11 +153,11 @@ const login = async (req, res) => {
     }
 
     if (user.status === "pending activation") {
-        return res.status(401).json({ error: "inactive" });
+      return res.status(401).json({ error: "inactive" });
     }
 
     if (user.status === "blocked") {
-        return res.status(401).json({ error: "blocked" });
+      return res.status(401).json({ error: "blocked" });
     }
     bcrypt.compare(password, user.passwordHash, (err, matched) => {
       if (matched) {
@@ -266,10 +268,10 @@ const getCurrentUser = async (req, res) => {
         role: userData.role,
         picture: userData.picture,
       };
-
+      console.log(user);
       return res.status(200).json(user);
     }
-
+    console.log(user);
     return res.send(undefined);
   } catch (err) {
     res.send(err);
@@ -326,7 +328,6 @@ const sendMailer = async (req, res) => {
     return res.status(200).send("error");
   }
 };
-
 
 module.exports = {
   createUser,
