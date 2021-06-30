@@ -5,7 +5,7 @@ const multer = require("multer");
 const auth = require("../helpers/auth");
 const verify = require("../helpers/verify");
 
-router.use(verify.isSuperAdmin);
+// router.use(verify.isSuperAdmin);
 
 router.get("/admins", async (req, res, next) => {
   await adminsController.getAllAdmins(req, res);
