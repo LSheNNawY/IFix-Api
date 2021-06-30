@@ -50,7 +50,6 @@ router.post("/users/logout", auth, async (req, res) => {
   res.clearCookie("userId");
   res.clearCookie("email");
   res.clearCookie("role");
-  // await userController.logout(req, res);
   res.status(200).json({ ok: true });
 });
 

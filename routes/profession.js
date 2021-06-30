@@ -10,7 +10,7 @@ const fileStorage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const uniqueSuffix =
-            Date.now() + "-" + Math.round(Math.random() * 1e9) + ".png";
+            Date.now() + "-" + Math.round(Math.random() * 1e9) + ".svg";
         cb(null, file.fieldname + "-" + uniqueSuffix);
     },
 });
