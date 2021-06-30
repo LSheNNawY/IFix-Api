@@ -408,4 +408,5 @@ module.exports = {
   getCurrentUser,
   payment,
   sendMailer,
+  adminLogin
 };
