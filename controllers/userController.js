@@ -218,13 +218,7 @@ const adminLogin = async (req , res) => {
       return res.status(401).json({ error: "wrong" });
     }
 
-    if (user.status === "pending activation") {
-        return res.status(401).json({ error: "inactive" });
-    }
-
-    if (user.status === "blocked") {
-        return res.status(401).json({ error: "blocked" });
-    }
+    
 
     bcrypt.compare(password, user.passwordHash, (err, matched) => {
       if (matched) {
