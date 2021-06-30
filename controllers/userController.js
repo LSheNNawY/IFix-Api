@@ -3,10 +3,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 const Job = require("../models/Job");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-const {
-  createAndSendConfirmationTokenMail,
-} = require("../controllers/authenticationController");
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const {createAndSendConfirmationTokenMail} = require('../controllers/authenticationController')
+
 
 /**
  * get all users function
@@ -204,6 +203,70 @@ const login = async (req, res) => {
   }
 };
 
+const adminLogin = async (req , res) => {
+  const { email, password } = req.body;
+  const data = {};
+
+  try {
+    const user = await User.findOne({ email: email });
+
+    if(user.role === "user") {
+      return res.status(401).json( {error: "invalid credentials" });
+    }
+
+    if (!user) {
+      return res.status(401).json({ error: "wrong" });
+    }
+
+    if (user.status === "blocked") {
+        return res.status(401).json({ error: "blocked" });
+    }
+
+    bcrypt.compare(password, user.passwordHash, (err, matched) => {
+      if (matched) {
+        data.userId = user.id;
+        data.username = user.firstName + " " + user.lastName;
+        data.email = user.email;
+        data.role = user.role;
+        data.picture = user.picture;
+        data.created_at = user.created_at;
+
+        const token = jwt.sign({ email: user.email }, process.env.SECRET_KEY);
+        const expirationTime = new Date(
+          Date.now() + parseInt(process.env.JWT_EXPIRATION)
+        );
+
+        res.cookie("token", token, {
+          httpOnly: true,
+          expires: expirationTime,
+        });
+
+        res.cookie("email", data.email, {
+          httpOnly: true,
+          expires: expirationTime,
+        });
+
+        res.cookie("userId", data.userId, {
+          httpOnly: true,
+          expires: expirationTime,
+        });
+
+        res.cookie("role", data.role, {
+          httpOnly: true,
+          expires: expirationTime,
+        });
+
+        return res.status(200).json({ ...data });
+      }
+      return res.status(401).json({ error: "wrong" });
+    });
+  } catch (err) {
+    res.status(401).json({
+      error: "Error logging you in, please try again later",
+    });
+  }
+}
+
 const verifyPassword = async (req, res) => {
   const { userId, password } = req.body;
   console.log(req.body);
@@ -268,10 +331,10 @@ const getCurrentUser = async (req, res) => {
         role: userData.role,
         picture: userData.picture,
       };
-      console.log(user);
+
       return res.status(200).json(user);
     }
-    console.log(user);
+
     return res.send(undefined);
   } catch (err) {
     res.send(err);
@@ -329,6 +392,7 @@ const sendMailer = async (req, res) => {
     }
 }
 
+
 module.exports = {
   createUser,
   getAll,
@@ -344,4 +408,5 @@ module.exports = {
   getCurrentUser,
   payment,
   sendMailer,
+  adminLogin
 };

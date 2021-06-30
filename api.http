@@ -1,0 +1,35 @@
+#GET http://localhost:5000/api/professions HTTP/1.1
+#GET http://localhost:5000/api/users HTTP/1.1
+
+# POST http://localhost:5000/api/users/login HTTP/1.1
+#  content-type: application/json
+
+#  {
+#      "email": "lilied@gmail.com",
+#      "password": "1234567"
+#  }
+
+#POST http://localhost:5000/api/users HTTP/1.1
+
+# {
+#     "firstname":"user",
+#     "lastname":"mohamed",
+#     "email":"user@gmail.com",
+#     "phone":"01011111111",
+#     "passwordHash":"1234567",
+#     "address":"mansoura",
+#     "profession_id":"60c1271d3812307808df5383"
+# }
+
+#GET http://localhost:5000/api/jobs HTTP/1.1
+# POST  http://localhost:5000/api/jobs HTTP/1.1
+
+#     {
+#      "client":"60c25c2a94ba5e58b49e7090",
+#      "employee":"60c3ebd8f8a2406f6325b824",
+#      "warranty":"2",
+#      "profession":"60c1271d3812307808df5383",
+#      "description":"this ths first job",
+#      "price":"500",
+#      "service":"60c56e9cda5b2b66485adcb1"
+#  }

@@ -8,6 +8,7 @@ const userValidation = Joi.object({
     phone: Joi.string()
         .regex(/^01[0125][0-9]{8}$/m)
         .required(),
+         
     password: Joi.string().required(),
     address: Joi.string().required(),
     dateOfBirth: Joi.string(),

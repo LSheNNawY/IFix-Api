@@ -15,39 +15,35 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-router.get("/employees", async (req, res, next) => {
+router.get("/employees", async (req, res) => {
   await employeeController.getAllEmployees(req, res);
 });
 
-router.post("/employees", upload.single("picture"), async (req, res, next) => {
+router.post("/employees", upload.single("picture"), async (req, res) => {
   await employeeController.createEmployee(req, res);
 });
 
-router.get("/employees/:id", async (req, res, next) => {
+router.get("/employees/:id", async (req, res) => {
   await employeeController.getEmployeeById(req, res);
 });
 
-router.put(
-  "/employees/:id",
-  upload.single("picture"),
-  async (req, res, next) => {
-    await employeeController.updateEmployee(req, res);
-  }
-);
+router.put("/employees/:id", upload.single("picture"), async (req, res) => {
+  await employeeController.updateEmployee(req, res);
+});
 
 router.put(
   "/employees/:id/block",
   // upload.single("picture"),
-  async (req, res, next) => {
+  async (req, res) => {
     await employeeController.blockEmployee(req, res);
   }
 );
 
-router.put("/employees/:id/unblock", async (req, res, next) => {
+router.put("/employees/:id/unblock", async (req, res) => {
   await employeeController.unblockEmployee(req, res);
 });
 
-router.delete("/employees/:id", async (req, res, next) => {
+router.delete("/employees/:id", async (req, res) => {
   await employeeController.deleteEmployee(req, res);
 });
 
