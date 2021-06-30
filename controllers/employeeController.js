@@ -37,10 +37,17 @@ const createEmployee = async (req, res) => {
         return res.status(402).send(error.details[0].message);
     }
 
-    const employeeExists = await User.findOne({ email });
-    if (employeeExists) {
-        return res.status(402).send("email is already registered");
+
+    const emailExists = await User.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({ error: "email" });
     }
+  
+    const phoneExists = await User.findOne({ phone });
+    if (phoneExists) {
+      return res.status(400).json({ error: "phone" });
+    }
+
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
