@@ -41,6 +41,10 @@ router.post("/users/login", async (req, res) => {
   await userController.login(req, res);
 });
 
+router.post("/admin/login", async (req, res) => {
+  await userController.adminLogin(req, res);
+});
+
 router.post("/users/logout", auth, async (req, res) => {
   res.clearCookie("token");
   res.clearCookie("userId");
