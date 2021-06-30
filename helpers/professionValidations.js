@@ -9,6 +9,7 @@ const professionValidation = Joi.object({
       service: Joi.string().min(5).max(20).trim().required(),
       description: Joi.string().min(10).required(),
       price: Joi.number(),
+      icon: Joi.string().required()
     })
     
   ),

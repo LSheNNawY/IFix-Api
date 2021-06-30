@@ -27,6 +27,10 @@ const ProfessionSchema = new mongoose.Schema(
                     type: Number,
                     default: 0,
                 },
+                icon:{
+                    type: String,
+                    required:true
+                }
             },
         ],
         img: {
