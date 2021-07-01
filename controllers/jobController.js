@@ -17,12 +17,18 @@ const createJob = async (req, res) => {
 
 const getAll = async (req, res) => {
   const userId = req.query.userId;
+  const totaljobs = await Job.countDocuments({});
+  const jobsPerPage = 10;
+
   try {
-    const jobsPerPage = 10;
     const page = parseInt(req.query.page || "0");
-    const totaljobs = await Job.countDocuments({});
     if (userId) {
       const id = mongoose.Types.ObjectId(userId);
+      const totaljobs = await Job.countDocuments({
+        $or: [{ client: id }, { employee: id }],
+      });
+      const jobsPerPage = 2 ;
+
       const jobs = await Job.find({
         $or: [{ client: id }, { employee: id }],
       })
@@ -32,22 +38,22 @@ const getAll = async (req, res) => {
         .limit(jobsPerPage)
         .skip(jobsPerPage * page);
 
-        return res.status(200).json({
-          totalPages: Math.ceil(jobs.length / jobsPerPage),
-          jobs,
-        });
-
+      return res.status(200).json({
+        totalPages: Math.ceil(totaljobs / jobsPerPage),
+        jobs,
+      });
     }
+
     const jobs = await Job.find({})
       .populate("client")
       .populate("employee")
       .populate("profession")
       .limit(jobsPerPage)
       .skip(jobsPerPage * page);
-      return res.status(200).json({
-        totalPages: Math.ceil(totaljobs / jobsPerPage),
-        jobs,
-      });
+    return res.status(200).json({
+      totalPages: Math.ceil(totaljobs / jobsPerPage),
+      jobs,
+    });
   } catch (err) {
     console.log(err);
     return res.status(400).send("fail");
