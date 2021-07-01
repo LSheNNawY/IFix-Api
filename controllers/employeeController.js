@@ -5,6 +5,10 @@ const userValidation = require("../helpers/userValidation");
 const getAllEmployees = async (req, res) => {
   const { search } = req.query;
   try {
+    const employeesPerPage = 10;
+    const page = parseInt(req.query.page || "0");
+    const totalemployees = await User.countDocuments({ role: "employee" });
+
     if (search) {
       const regex = new RegExp(search, "i");
       const employees = await User.find({
@@ -14,13 +18,25 @@ const getAllEmployees = async (req, res) => {
             $or: [{ firstName: regex }, { lastName: regex }, { email: regex }],
           },
         ],
-      }).populate("profession");
-      return res.status(200).json(employees);
+      })
+        .populate("profession")
+        .limit(employeesPerPage)
+        .skip(employeesPerPage * page);
+
+      return res.status(200).json({
+        totalPages: Math.ceil(employees.length / employeesPerPage),
+        employees,
+      });
     }
 
     const employees = await User.find({ role: "employee" })
-      .populate("profession");
-    return res.status(200).json(employees);
+      .populate("profession")
+      .limit(employeesPerPage)
+      .skip(employeesPerPage * page);
+    return res.status(200).json({
+      totalPages: Math.ceil(totalemployees / employeesPerPage),
+      employees,
+    });
   } catch (error) {
     console.log(error);
     return res.status(402).send("error in get employees");

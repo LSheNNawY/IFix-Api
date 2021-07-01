@@ -11,8 +11,12 @@ const professionValidation = require("../helpers/professionValidations");
  */
 
 const getAll = async (req, res) => {
-  const { search, professions } = req.query;
+  const { search } = req.query;
   try {
+    const professionsPerPage = 10;
+    const page = parseInt(req.query.page || "0");
+    const totalProfessions = await Profession.countDocuments({});
+
     if (req.query.professions) {
       const professions = await Profession.find({})
         .populate("services")
@@ -23,12 +27,25 @@ const getAll = async (req, res) => {
 
     if (search) {
       const regex = new RegExp(search, "i");
-      const professions = await Profession.find({ $or: [{ title: regex }] });
-      return res.status(200).json(professions);
+      const professions = await Profession.find({ $or: [{ title: regex }] })
+        .limit(professionsPerPage)
+        .skip(professionsPerPage * page);
+
+      return res.status(200).json({
+        totalPages: Math.ceil(totalProfessions / professionsPerPage),
+        professions,
+      });
     }
 
-    const professions = await Profession.find({}).populate("employees");
-    return res.status(200).json(professions);
+    const professions = await Profession.find({})
+      .populate("services")
+      .populate("employees")
+      .limit(professionsPerPage)
+      .skip(professionsPerPage * page);
+    return res.status(200).json({
+      totalPages: Math.ceil(professions.length / professionsPerPage),
+      professions,
+    });
   } catch (err) {
     console.log(err);
     return res.status(400).send({ message: "professions not found" });

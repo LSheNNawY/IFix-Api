@@ -18,6 +18,10 @@ const {
 const getAll = async (req, res) => {
   const { search } = req.query;
   try {
+    const usersPerPage = 10;
+    const page = parseInt(req.query.page || "0");
+    const totalusers = await User.countDocuments({ role: "user" });
+
     if (search) {
       const regex = new RegExp(search, "i");
       const users = await User.find({
@@ -25,17 +29,30 @@ const getAll = async (req, res) => {
         $and: [
           {
             $or: [
-              { firstName: search },
-              { lastName: search },
-              { email: search },
+              { firstName: regex },
+              { lastName: regex },
+              { email: regex },
             ],
           },
         ],
+      })
+        .limit(usersPerPage)
+        .skip(usersPerPage * page);
+
+      return res.status(200).json({
+        totalPages: Math.ceil(users.length / usersPerPage),
+        users,
       });
-      return res.status(200).json(users);
     }
-    const users = await User.find({ role: "user" });
-    return res.status(200).json(users);
+
+    const users = await User.find({ role: "user" })
+      .limit(usersPerPage)
+      .skip(usersPerPage * page);
+
+    return res.status(200).json({
+      totalPages: Math.ceil(totalusers / usersPerPage),
+      users,
+    });
   } catch (error) {
     console.log(error);
     return res.status(400).send("error in get users");

@@ -5,16 +5,37 @@ const userValidation = require("../helpers/userValidation");
 const getAllAdmins = async (req, res) => {
   const { search } = req.query;
   try {
+    const adminsPerPage = 10;
+    const page = parseInt(req.query.page || "0");
+    const totaladmins = await User.countDocuments({ role: "admin" });
+
     if (search) {
       let regex = new RegExp(search, "i");
       const admins = await User.find({
         role: "admin",
-        $and: [{ $or: [{ firstName: regex },{ lastName: regex }, { email: regex }] }],
+        $and: [
+          {
+            $or: [{ firstName: regex }, { lastName: regex }, { email: regex }],
+          },
+        ],
+      })
+        .limit(adminsPerPage)
+        .skip(adminsPerPage * page);
+
+      return res.status(200).json({
+        totalPages: Math.ceil(admins.length / adminsPerPage),
+        admins,
       });
-      return res.status(200).json(admins);
     }
-    const admins = await User.find({ role: "admin" });
-    return res.status(200).json(admins);
+
+    const admins = await User.find({ role: "admin" })
+      .limit(adminsPerPage)
+      .skip(adminsPerPage * page);
+
+    return res.status(200).json({
+      totalPages: Math.ceil(totaladmins / adminsPerPage),
+      admins,
+    });
   } catch (error) {
     console.log(error);
     return res.status(402).send("error in get admins");
