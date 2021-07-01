@@ -1,6 +1,8 @@
 const User = require("../models/User");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 const userValidation = require("../helpers/userValidation");
 const Job = require("../models/Job");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -58,6 +60,7 @@ const getAll = async (req, res) => {
     return res.status(400).send("error in get users");
   }
 };
+
 
 /**
  * register or create user function
@@ -422,8 +425,37 @@ const sendMailer = async (req, res) => {
       subject: subject,
     });
     return res.status(200).send("done");
-  } catch (err) {
-    return res.status(400).send("error");
+    } catch (err) {
+        return res.status(500).send("error");
+    }
+}
+
+const StatisticsTotal=async (req, res) => {
+  try {
+    const TotalCountUsers = await User.countDocuments({role: "user"});
+    const TotalCountEmployees = await User.countDocuments({role: "employee"});
+    const TotalCountJobs = await Job.countDocuments({});
+
+    return res.status(200).json({TotalCountUsers,TotalCountEmployees,TotalCountJobs});
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send("error in get count");
+  }
+};
+const StatisticsTotalRecent=async (req, res) => {
+  const now = new Date();
+  // console.log(now.getDate())
+  let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  try {
+    const TotalCountUsers = await User.countDocuments({role: "employee",created_at: {$gte: startOfToday}});
+    const TotalCountEmployees = await User.countDocuments({role: "employee",created_at: {$gte: startOfToday}});
+    const TotalCountJobs = await Job.countDocuments({created_at: {$gte: startOfToday}});
+
+    return res.status(200).json({TotalCountUsers,TotalCountEmployees,TotalCountJobs});
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send("error in get count");
   }
 };
 
@@ -443,4 +475,6 @@ module.exports = {
   payment,
   sendMailer,
   adminLogin,
+  StatisticsTotal,
+  StatisticsTotalRecent
 };
