@@ -84,5 +84,10 @@ router.post("/payment", async (req, res) => {
 router.post("/mail", async (req, res) => {
   await userController.sendMailer(req, res);
 });
-
+router.get("/statisticstotal", async (req, res) => {
+  await userController.StatisticsTotal(req, res);
+});
+router.get("/statisticstotalrecent", async (req, res) => {
+  await userController.StatisticsTotalRecent(req, res);
+});
 module.exports = router;
