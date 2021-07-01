@@ -3,9 +3,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const userValidation = require("../helpers/userValidation");
 const Job = require("../models/Job");
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const {createAndSendConfirmationTokenMail} = require('../controllers/authenticationController')
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const {
+  createAndSendConfirmationTokenMail,
+} = require("../controllers/authenticationController");
 
 /**
  * get all users function
@@ -15,7 +16,24 @@ const {createAndSendConfirmationTokenMail} = require('../controllers/authenticat
  */
 
 const getAll = async (req, res) => {
+  const { search } = req.query;
   try {
+    if (search) {
+      const regex = new RegExp(search, "i");
+      const users = await User.find({
+        role: "user",
+        $and: [
+          {
+            $or: [
+              { firstName: search },
+              { lastName: search },
+              { email: search },
+            ],
+          },
+        ],
+      });
+      return res.status(200).json(users);
+    }
     const users = await User.find({ role: "user" });
     return res.status(200).json(users);
   } catch (error) {
@@ -203,15 +221,15 @@ const login = async (req, res) => {
   }
 };
 
-const adminLogin = async (req , res) => {
+const adminLogin = async (req, res) => {
   const { email, password } = req.body;
   const data = {};
 
   try {
     const user = await User.findOne({ email: email });
 
-    if(user.role === "user") {
-      return res.status(401).json( {error: "invalid credentials" });
+    if (user.role === "user") {
+      return res.status(401).json({ error: "invalid credentials" });
     }
 
     if (!user) {
@@ -219,7 +237,7 @@ const adminLogin = async (req , res) => {
     }
 
     if (user.status === "blocked") {
-        return res.status(401).json({ error: "blocked" });
+      return res.status(401).json({ error: "blocked" });
     }
 
     bcrypt.compare(password, user.passwordHash, (err, matched) => {
@@ -265,7 +283,7 @@ const adminLogin = async (req , res) => {
       error: "Error logging you in, please try again later",
     });
   }
-}
+};
 
 const verifyPassword = async (req, res) => {
   const { userId, password } = req.body;
@@ -392,7 +410,6 @@ const sendMailer = async (req, res) => {
   }
 };
 
-
 module.exports = {
   createUser,
   getAll,
@@ -408,5 +425,5 @@ module.exports = {
   getCurrentUser,
   payment,
   sendMailer,
-  adminLogin
+  adminLogin,
 };
