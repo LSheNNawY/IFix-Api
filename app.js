@@ -44,7 +44,7 @@ app.use("/api", [
   userRouter,
   employeeRouter,
 ]);
-app.use("/api", verify.isSuperAdmin, adminsRouter);
+app.use("/api", adminsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
