@@ -131,8 +131,8 @@ const updateEmployee = async (req, res) => {
       picture = req.file.filename;
       userData.picture = picture;
     }
-    await User.findOneAndUpdate({ _id: id }, userData);
-    return res.status(200).send("Updated Successfully");
+    const employee = await User.findOneAndUpdate({ _id: id }, userData,{ new: true });
+    return res.status(200).send(employee);
   } catch (error) {
     console.error(error);
     return res.status(402).send("Error Updating");

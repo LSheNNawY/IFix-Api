@@ -101,7 +101,8 @@ const updateAdmin = async (req, res) => {
   }
   try {
     await User.findOneAndUpdate({ _id: id }, req.body);
-    return res.status(200).send("Updated Successfully");
+    const admin = await User.findOneAndUpdate({ _id: id }, userData,{ new: true });
+    return res.status(200).send(admin);
   } catch (error) {
     console.error(error);
     return res.status(402).send("Error Updating");

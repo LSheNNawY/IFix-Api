@@ -128,8 +128,8 @@ const updateUser = async (req, res) => {
     return res.status(400).send(error.details[0].message);
   }
   try {
-    await User.findOneAndUpdate({ _id: id }, req.body);
-    return res.status(200).send("Updated Successfully");
+    const user = await User.findOneAndUpdate({ _id: id }, req.body,{ new: true });
+    return res.status(200).send(user);
   } catch (error) {
     console.error(error);
     return res.status(400).send("Error encountred");
