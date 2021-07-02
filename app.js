@@ -15,7 +15,6 @@ const userRouter = require("./routes/users");
 const adminsRouter = require("./routes/admins");
 const employeeRouter = require("./routes/employees");
 const authenticationRouter = require("./routes/authentication");
-const verify = require("./helpers/verify");
 const app = express();
 
 // view engine setup

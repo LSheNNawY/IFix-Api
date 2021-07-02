@@ -27,7 +27,7 @@ const getAll = async (req, res) => {
       const totaljobs = await Job.countDocuments({
         $or: [{ client: id }, { employee: id }],
       });
-      const jobsPerPage = 2 ;
+      // const jobsPerPage = 2 ;
 
       const jobs = await Job.find({
         $or: [{ client: id }, { employee: id }],
