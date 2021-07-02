@@ -458,7 +458,7 @@ const StatisticsTotalRecent = async (req, res) => {
 
   try {
     const TotalCountUsers = await User.countDocuments({
-      role: "employee",
+      role: "user",
       created_at: { $gte: startOfToday },
     });
     const TotalCountEmployees = await User.countDocuments({
