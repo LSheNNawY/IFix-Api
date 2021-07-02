@@ -243,12 +243,12 @@ const adminLogin = async (req, res) => {
   try {
     const user = await User.findOne({ email: email });
 
-    if (user.role === "user") {
-      return res.status(401).json({ error: "invalid credentials" });
-    }
-
     if (!user) {
       return res.status(401).json({ error: "wrong" });
+    }
+
+    if (user.role === "user") {
+      return res.status(401).json({ error: "invalid credentials" });
     }
 
     if (user.status === "blocked") {
