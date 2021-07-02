@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const userValidation = require("../helpers/userValidation");
+const { assignEmployeeToProfession } = require("./professionController");
 
 const getAllEmployees = async (req, res) => {
   const { search } = req.query;
@@ -94,6 +95,7 @@ const createEmployee = async (req, res) => {
   });
   try {
     await newEmployee.save();
+    await assignEmployeeToProfession(profession, newEmployee._id);
     return res.status(200).send(newEmployee);
   } catch (error) {
     console.error(error);
