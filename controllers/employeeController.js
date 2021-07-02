@@ -11,6 +11,7 @@ const getAllEmployees = async (req, res) => {
 
     if (search) {
       const regex = new RegExp(search, "i");
+      console.log(regex);
       const employees = await User.find({
         role: "employee",
         $and: [
@@ -131,7 +132,9 @@ const updateEmployee = async (req, res) => {
       picture = req.file.filename;
       userData.picture = picture;
     }
-    const employee = await User.findOneAndUpdate({ _id: id }, userData,{ new: true });
+    const employee = await User.findOneAndUpdate({ _id: id }, userData, {
+      new: true,
+    });
     return res.status(200).send(employee);
   } catch (error) {
     console.error(error);

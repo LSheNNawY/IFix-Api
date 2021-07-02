@@ -44,6 +44,7 @@ app.use("/api", [
   userRouter,
   employeeRouter,
 ]);
+
 app.use("/api", verify.isSuperAdmin, adminsRouter);
 
 // catch 404 and forward to error handler
