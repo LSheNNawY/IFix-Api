@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
-const jobSchema = new mongoose.Schema(
+const timeZone = require('mongoose-timezone');
+
+const JobSchema = new mongoose.Schema(
     {
         client: {
             type: Schema.Types.ObjectId,
@@ -61,6 +63,9 @@ const jobSchema = new mongoose.Schema(
 
     { timestamps: { createdAt: "created_at" } }
 );
-const Job = mongoose.model("Job", jobSchema);
+
+JobSchema.plugin(timeZone, { paths: ['date', 'created_at', 'started_at', 'wish_date', 'ended_at'] });
+
+const Job = mongoose.model("Job", JobSchema);
 
 module.exports = Job;

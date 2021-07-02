@@ -39,6 +39,7 @@ const confirmAccount = async (req, res) => {
         const created_at_time = new Date(account.createdAt).getTime();
 
         const now_time = new Date().getTime();
+        console.log((now_time - created_at_time) / (1000 * 60 * 60));
         if ((now_time - created_at_time) / (1000 * 60 * 60) > 1) {
             return res.status(400).json({ msg: "token expired" });
         }

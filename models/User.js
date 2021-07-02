@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
+const timeZone = require('mongoose-timezone');
+
 const userSchema = new mongoose.Schema(
   {
     firstName: {
@@ -70,6 +72,9 @@ const userSchema = new mongoose.Schema(
   },
   { timestamps: { createdAt: "created_at", updatedAt: false } }
 );
+
+userSchema.plugin(timeZone, { paths: ['date', 'created_at'] });
+
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
