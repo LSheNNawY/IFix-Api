@@ -92,19 +92,26 @@ const getAdminById = async (req, res) => {
 };
 
 const updateAdmin = async (req, res) => {
-  console.log(req.body);
   const id = req.params.id.toString();
+  console.log(req.body);
   const { error } = userValidation.validate(req.body);
   if (error) {
-    console.error(error);
     return res.status(402).send(error.details[0].message);
   }
   try {
-    const admin = await User.findOneAndUpdate({ _id: id }, req.body,{ new: true });
+    let userData = req.body;
+    let picture;
+    if (req.file) {
+      picture = req.file.filename;
+      userData.picture = picture;
+    }
+    const admin = await User.findOneAndUpdate({ _id: id }, userData, {
+      new: true,
+    });
     return res.status(200).send(admin);
   } catch (error) {
     console.error(error);
-    return res.status(402).send(error.details[0].message);
+    return res.status(402).send("Error Updating");
   }
 };
 
