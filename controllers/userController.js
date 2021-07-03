@@ -123,21 +123,31 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const id = req.params.id.toString();
+  console.log(req.body)
   const { error } = userValidation.validate(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);
+    return res.status(402).send(error.details[0].message);
   }
   try {
-    const user = await User.findOneAndUpdate({ _id: id }, req.body,{ new: true });
+    let userData = req.body;
+    let picture;
+    if (req.file) {
+      picture = req.file.filename;
+      userData.picture = picture;
+    }
+    const user = await User.findOneAndUpdate({ _id: id }, userData, {
+      new: true,
+    });
     return res.status(200).send(user);
   } catch (error) {
     console.error(error);
-    return res.status(400).send("Error encountred");
+    return res.status(402).send("Error Updating");
   }
 };
 
 const blockUser = async (req, res) => {
   const id = req.params.id.toString();
+
   try {
     await User.findOneAndUpdate({ _id: id }, { status: "blocked" });
     return res.status(200).json({ message: "User blocked", status: "blocked" });
