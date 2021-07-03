@@ -141,7 +141,6 @@ const updateDescription = async (req, res) => {
 };
 
 const updateReview = async (req, res) => {
-<<<<<<< HEAD
     const body = req.body;
     console.log(req.body);
     try {
@@ -150,25 +149,14 @@ const updateReview = async (req, res) => {
             job.review.rate = body.review.rate;
             job.review.comment = body.review.comment;
             job.save();
+
+            await updateEmployeeRating(job.employee);
+            // console.log(`Sum = ${rateSum} && Avg=${rateSum / employeeRates.length}`);
             return res.json(job);
         }
-        return res.status(500).json({ok: false});
+        return res.status(500).json({ ok: false });
     } catch (err) {
         console.log(err);
-=======
-  const body = req.body;
-  console.log(req.body);
-  try {
-    const job = await Job.findById(req.params.id);
-    if (JSON.stringify(job.ended_at) !== "{}") {
-      job.review.rate = body.review.rate;
-      job.review.comment = body.review.comment;
-      job.save();
-
-      await updateEmployeeRating(job.employee);
-      // console.log(`Sum = ${rateSum} && Avg=${rateSum / employeeRates.length}`);
-      return res.json(job);
->>>>>>> 1c0dd4af4ab7664a8fe6aee6a4d43a4037270071
     }
 };
 
