@@ -1,4 +1,5 @@
 const Job = require("../models/Job");
+const User = require("../models/User");
 const mongoose = require("mongoose");
 
 const createJob = async (req, res) => {
@@ -146,12 +147,32 @@ const updateReview = async (req, res) => {
       job.review.rate = body.review.rate;
       job.review.comment = body.review.comment;
       job.save();
+
+      await updateEmployeeRating(job.employee);
+      // console.log(`Sum = ${rateSum} && Avg=${rateSum / employeeRates.length}`);
       return res.json(job);
     }
     return res.status(500).json({ ok: false });
   } catch (err) {
     console.log(err);
   }
+};
+
+const updateEmployeeRating = async (employeeId) => {
+  const employeeRates = await Job.find({
+    $and: [{ employee: employeeId }, { "review.rate": { $exists: true } }],
+  }).select("review.rate -_id");
+  
+  let rateSum = 0;
+
+  employeeRates.forEach(({ review }) => {
+    rateSum += review.rate;
+  });
+
+  const user = await User.findById(employeeId);
+  user.rating = rateSum / employeeRates.length;
+  user.save();
+  console.log(user);
 };
 
 // const deleteReview = async (req, res) => {
