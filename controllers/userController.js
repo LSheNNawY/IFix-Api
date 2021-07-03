@@ -123,10 +123,19 @@ const getUserById = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const id = req.params.id.toString();
-  console.log(req.body)
   const { error } = userValidation.validate(req.body);
   if (error) {
     return res.status(402).send(error.details[0].message);
+  }
+
+  const emailExists = await User.findOne({ email: req.body.email });
+  if (emailExists && (emailExists._id).toString() !== id) {
+    return res.status(400).json({ error: "email" });
+  }
+
+  const phoneExists = await User.findOne({ phone: req.body.phone });
+  if (phoneExists && (phoneExists._id).toString() !== id) {
+    return res.status(400).json({ error: "phone" });
   }
   try {
     let userData = req.body;
@@ -139,9 +148,9 @@ const updateUser = async (req, res) => {
       new: true,
     });
     return res.status(200).send(user);
-  } catch (error) {
-    console.error(error);
-    return res.status(402).send("Error Updating");
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send( err.details[0].message );
   }
 };
 
