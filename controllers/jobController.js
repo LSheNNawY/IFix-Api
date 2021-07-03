@@ -148,10 +148,9 @@ const updateReview = async (req, res) => {
     if (JSON.stringify(job.ended_at) !== "{}") {
       job.review.rate = body.review.rate;
       job.review.comment = body.review.comment;
-      job.save();
+      await job.save();
 
       await updateEmployeeRating(job.employee);
-      // console.log(`Sum = ${rateSum} && Avg=${rateSum / employeeRates.length}`);
       return res.json(job);
     }
     return res.status(500).json({ ok: false });
