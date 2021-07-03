@@ -1,37 +1,37 @@
 const adminsController = require("../controllers/adminsController");
 const express = require("express");
-const router = express.Router();
-const multer = require("multer");
-const auth = require("../helpers/auth");
 const verify = require("../helpers/verify");
+const router = express.Router();
 
-router.use(verify.isSuperAdmin);
-
-router.get("/admins", async (req, res, next) => {
+router.get("/admins", verify.isSuperAdmin, async (req, res, next) => {
   await adminsController.getAllAdmins(req, res);
 });
 
-router.post("/admins", async (req, res, next) => {
+router.post("/admins", verify.isSuperAdmin, async (req, res, next) => {
   await adminsController.createAdmin(req, res);
 });
 
-router.get("/admins/:id", async (req, res, next) => {
+router.get("/admins/:id", verify.isSuperAdmin, async (req, res, next) => {
   await adminsController.getAdminById(req, res);
 });
 
-router.put("/admins/:id", async (req, res, next) => {
+router.put("/admins/:id", verify.isSuperAdmin, async (req, res) => {
   await adminsController.updateAdmin(req, res);
 });
 
-router.put("/admins/:id/block", async (req, res, next) => {
+router.put("/admins/:id/block", verify.isSuperAdmin, async (req, res, next) => {
   await adminsController.blockAdmin(req, res);
 });
 
-router.put("/admins/:id/unblock", async (req, res, next) => {
-  await adminsController.unblockAdmin(req, res);
-});
+router.put(
+  "/admins/:id/unblock",
+  verify.isSuperAdmin,
+  async (req, res, next) => {
+    await adminsController.unblockAdmin(req, res);
+  }
+);
 
-router.delete("/admins/:id", async (req, res, next) => {
+router.delete("/admins/:id", verify.isSuperAdmin, async (req, res, next) => {
   await adminsController.deleteAdmin(req, res);
 });
 

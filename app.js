@@ -15,7 +15,6 @@ const userRouter = require("./routes/users");
 const adminsRouter = require("./routes/admins");
 const employeeRouter = require("./routes/employees");
 const authenticationRouter = require("./routes/authentication");
-const verify = require("./helpers/verify");
 const app = express();
 
 // view engine setup
@@ -43,9 +42,8 @@ app.use("/api", [
   jobsRouter,
   userRouter,
   employeeRouter,
+  adminsRouter,
 ]);
-
-app.use("/api", verify.isSuperAdmin, adminsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
