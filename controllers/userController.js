@@ -384,6 +384,7 @@ const payment = async (req, res) => {
       payment_method: id,
       confirm: true,
     });
+
     console.log("stripe-routes.js 19 | payment", paymentIntent);
     const job = await Job.findById(job_id);
     job.price = amount;
