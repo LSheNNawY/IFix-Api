@@ -1,6 +1,8 @@
 const { date } = require("joi");
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
+const timeZone = require('mongoose-timezone');
+
 const AuthenticationSchema = new mongoose.Schema(
     {
         email: {
@@ -22,7 +24,7 @@ const AuthenticationSchema = new mongoose.Schema(
         },
         createdAt: {
             type: Date,
-            default: new Date()
+            default: new Date(),
         },
         confiremedAt: {
             type: Date
@@ -30,6 +32,8 @@ const AuthenticationSchema = new mongoose.Schema(
     },
     { timestamps: false }
 );
+
+AuthenticationSchema.plugin(timeZone, { paths: ['date', 'createdAt'] });
 const Authentication = mongoose.model("Authentication", AuthenticationSchema);
 
 module.exports = Authentication;
