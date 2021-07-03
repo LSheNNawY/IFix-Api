@@ -193,9 +193,13 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "wrong" });
     }
-
+    
     if (user.status === "pending activation") {
       return res.status(401).json({ error: "inactive" });
+    }
+
+    if (user.status === "pending interview"){
+      return res.status(401).json({ error: "pending" });
     }
 
     if (user.status === "blocked") {
