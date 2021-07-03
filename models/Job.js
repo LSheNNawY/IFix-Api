@@ -54,6 +54,9 @@ const jobSchema = new mongoose.Schema(
         ended_at: {
             type: String,
         },
+        wish_date: {
+            type: String
+        }
     },
 
     { timestamps: { createdAt: "created_at" } }
