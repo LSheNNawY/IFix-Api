@@ -61,7 +61,7 @@ router.get("/users/:id", async (req, res) => {
   await userController.getUserById(req, res);
 });
 
-router.put("/users/:id", async (req, res) => {
+router.put("/users/:id", upload.single("picture"), async (req, res) => {
   await userController.updateUser(req, res);
 });
 
