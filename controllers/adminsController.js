@@ -53,6 +53,15 @@ const createAdmin = async (req, res) => {
     return res.status(402).send(error.details[0].message);
   }
 
+  const emailExists = await User.findOne({ email });
+  if (emailExists) {
+    return res.status(400).json({ error: "email" });
+  }
+
+  const phoneExists = await User.findOne({ phone });
+  if (phoneExists) {
+    return res.status(400).json({ error: "phone" });
+  }
   const adminExists = await User.findOne({ email });
   if (adminExists) {
     return res.status(402).send("email is already registered");
@@ -97,6 +106,15 @@ const updateAdmin = async (req, res) => {
   const { error } = userValidation.validate(req.body);
   if (error) {
     return res.status(402).send(error.details[0].message);
+  }
+  const emailExists = await User.findOne({ email: req.body.email });
+  if (emailExists && (emailExists._id).toString() !== id) {
+    return res.status(400).json({ error: "email" });
+  }
+
+  const phoneExists = await User.findOne({ phone: req.body.phone });
+  if (phoneExists && (phoneExists._id).toString() !== id) {
+    return res.status(400).json({ error: "phone" });
   }
   try {
     let userData = req.body;
