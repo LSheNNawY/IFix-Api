@@ -1,6 +1,8 @@
 const Job = require("../models/Job");
 const User = require("../models/User");
 const mongoose = require("mongoose");
+const { mail } = require("../helpers/mail");
+const { employeeNewJobmailTemplate } = require("../helpers/emailTemplates");
 
 const createJob = async (req, res) => {
   const job = req.body;
@@ -9,7 +11,18 @@ const createJob = async (req, res) => {
     job.employee = mongoose.Types.ObjectId(job.employee);
     job.profession = mongoose.Types.ObjectId(job.profession);
     await Job.create(job);
-    return res.status(200).send("done");
+    
+    res.status(200).send("done");
+
+    const client = await User.findById(job.client);
+    const employee = await User.findById(job.employee);
+
+    await mail({
+      from: `IFIX < Team >`,
+      to: employee.email,
+      html: employeeNewJobmailTemplate(`${client.firstName} ${client.lastName}`, new Date(), job.wish_date),
+      subject: "New job alert"
+    });
   } catch (err) {
     console.log(err);
     return res.status(400).send("fail");
