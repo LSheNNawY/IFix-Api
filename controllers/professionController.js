@@ -92,7 +92,6 @@ const getProfessionById = async (req, res) => {
       const profession = await Profession.findOne({
         _id: req.params.id,
       });
-      console.log(profession);
       return res.status(200).json(profession.services);
     }
     const profession = await Profession.findOne({
