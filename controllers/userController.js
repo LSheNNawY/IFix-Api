@@ -129,12 +129,12 @@ const updateUser = async (req, res) => {
   }
 
   const emailExists = await User.findOne({ email: req.body.email });
-  if (emailExists && (emailExists._id).toString() !== id) {
+  if (emailExists && emailExists._id.toString() !== id) {
     return res.status(400).json({ error: "email" });
   }
 
   const phoneExists = await User.findOne({ phone: req.body.phone });
-  if (phoneExists && (phoneExists._id).toString() !== id) {
+  if (phoneExists && phoneExists._id.toString() !== id) {
     return res.status(400).json({ error: "phone" });
   }
   try {
@@ -150,7 +150,7 @@ const updateUser = async (req, res) => {
     return res.status(200).send(user);
   } catch (err) {
     console.error(err);
-    return res.status(500).send( err.details[0].message );
+    return res.status(500).send(err.details[0].message);
   }
 };
 
@@ -202,12 +202,12 @@ const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: "wrong" });
     }
-    
+
     if (user.status === "pending activation") {
       return res.status(401).json({ error: "inactive" });
     }
 
-    if (user.status === "pending interview"){
+    if (user.status === "pending interview") {
       return res.status(401).json({ error: "pending" });
     }
 
@@ -228,25 +228,32 @@ const login = async (req, res) => {
           Date.now() + parseInt(process.env.JWT_EXPIRATION)
         );
 
-        res.cookie("token", token, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        res.setHeader("set-cookie", [
+          `token=${token}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+          `email=${data.email}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+          `userId=${data.userId}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+          `role=${data.role}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+        ]);
 
-        res.cookie("email", data.email, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        // res.cookie("token", token, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
 
-        res.cookie("userId", data.userId, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        // res.cookie("email", data.email, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
 
-        res.cookie("role", data.role, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        // res.cookie("userId", data.userId, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
+
+        // res.cookie("role", data.role, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
 
         return res.status(200).json({ ...data });
       }
@@ -292,25 +299,32 @@ const adminLogin = async (req, res) => {
           Date.now() + parseInt(process.env.JWT_EXPIRATION)
         );
 
-        res.cookie("token", token, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        res.setHeader("set-cookie", [
+          `token=${token}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+          `email=${data.email}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+          `userId=${data.userId}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+          `role=${data.role}; httpOnly=true; expires: ${expirationTime}; SameSite=None; Secure`,
+        ]);
 
-        res.cookie("email", data.email, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        // res.cookie("token", token, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
 
-        res.cookie("userId", data.userId, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        // res.cookie("email", data.email, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
 
-        res.cookie("role", data.role, {
-          httpOnly: true,
-          expires: expirationTime,
-        });
+        // res.cookie("userId", data.userId, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
+
+        // res.cookie("role", data.role, {
+        //   httpOnly: true,
+        //   expires: expirationTime,
+        // });
 
         return res.status(200).json({ ...data });
       }
@@ -358,19 +372,26 @@ const isLoggedIn = (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.cookie("token", "", {
-    httpOnly: true,
-    expires: new Date(0),
-  });
-  res.cookie("username", "", {
-    expires: new Date(0),
-  });
-  res.cookie("userId", "", {
-    expires: new Date(0),
-  });
-  res.cookie("role", "", {
-    expires: new Date(0),
-  });
+  res.setHeader("set-cookie", [
+    `token=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+    `email=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+    `userId=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+    `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  ]);
+
+  // res.cookie("token", "", {
+  //   httpOnly: true,
+  //   expires: new Date(0),
+  // });
+  // res.cookie("username", "", {
+  //   expires: new Date(0),
+  // });
+  // res.cookie("userId", "", {
+  //   expires: new Date(0),
+  // });
+  // res.cookie("role", "", {
+  //   expires: new Date(0),
+  // });
   res.send();
 };
 
