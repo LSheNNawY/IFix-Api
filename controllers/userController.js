@@ -339,7 +339,6 @@ const adminLogin = async (req, res) => {
 
 const verifyPassword = async (req, res) => {
   const { userId, password } = req.body;
-  console.log(req.body);
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -429,7 +428,6 @@ const payment = async (req, res) => {
       confirm: true,
     });
 
-    console.log("stripe-routes.js 19 | payment", paymentIntent);
     const job = await Job.findById(job_id);
     job.price = amount;
     job.payment_method = "Credit Card";
@@ -444,7 +442,6 @@ const payment = async (req, res) => {
 const sendMailer = async (req, res) => {
   const { email, body, name } = req.body;
   let to = `IFIX < ${process.env.MAIL_SENDER_EMAIL_ADDRESS} >`;
-  console.log(to);
   let subject = "IFix Comment";
   try {
     await mail({
@@ -487,7 +484,6 @@ const StatisticsTotal = async (req, res) => {
 };
 const StatisticsTotalRecent = async (req, res) => {
   const now = new Date();
-  // console.log(now.getDate())
   let startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   try {

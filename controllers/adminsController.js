@@ -43,7 +43,6 @@ const getAllAdmins = async (req, res) => {
 };
 
 const createAdmin = async (req, res) => {
-  console.log(req);
   const { firstName, lastName, email, password, phone, address, dateOfBirth } =
     req.body;
 
@@ -102,7 +101,6 @@ const getAdminById = async (req, res) => {
 
 const updateAdmin = async (req, res) => {
   const id = req.params.id.toString();
-  console.log(req.body);
   const { error } = userValidation.validate(req.body);
   if (error) {
     return res.status(402).send(error.details[0].message);

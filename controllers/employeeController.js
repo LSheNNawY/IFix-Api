@@ -12,7 +12,6 @@ const getAllEmployees = async (req, res) => {
 
     if (search) {
       const regex = new RegExp(search, "i");
-      console.log(regex);
       const employees = await User.find({
         role: "employee",
         $and: [
