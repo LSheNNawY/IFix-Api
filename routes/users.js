@@ -53,11 +53,11 @@ router.post("/users/logout", auth, async (req, res) => {
   //   `userId=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
   //   `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
   // ]);
-
   res.clearCookie("token");
   res.clearCookie("userId");
-  res.clearCookie("email");
+  res.clearCookie("username");
   res.clearCookie("role");
+  
   res.status(200).json({ ok: true });
 });
 

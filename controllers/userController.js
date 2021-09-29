@@ -378,19 +378,24 @@ const logout = (req, res) => {
   //   `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
   // ]);
 
-  res.cookie("token", "", {
-    httpOnly: true,
-    expires: new Date(0),
-  });
-  res.cookie("username", "", {
-    expires: new Date(0),
-  });
-  res.cookie("userId", "", {
-    expires: new Date(0),
-  });
-  res.cookie("role", "", {
-    expires: new Date(0),
-  });
+  res.clearCookie("token");
+  res.clearCookie("userId");
+  res.clearCookie("username");
+  res.clearCookie("role");
+
+  //   res.cookie("token", "", {
+  //     httpOnly: true,
+  //     expires: new Date(0),
+  //   });
+  //   res.cookie("username", "", {
+  //     expires: new Date(0),
+  //   });
+  //   res.cookie("userId", "", {
+  //     expires: new Date(0),
+  //   });
+  //   res.cookie("role", "", {
+  //     expires: new Date(0),
+  //   });
   res.send();
 };
 
