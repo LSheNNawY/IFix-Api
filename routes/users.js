@@ -47,17 +47,17 @@ router.post("/admin/login", async (req, res) => {
 
 router.post("/users/logout", auth, async (req, res) => {
 
-  res.setHeader("set-cookie", [
-    `token=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-    `email=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-    `userId=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-    `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-  ]);
+  // res.setHeader("set-cookie", [
+  //   `token=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  //   `email=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  //   `userId=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  //   `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  // ]);
 
-  // res.clearCookie("token");
-  // res.clearCookie("userId");
-  // res.clearCookie("email");
-  // res.clearCookie("role");
+  res.clearCookie("token");
+  res.clearCookie("userId");
+  res.clearCookie("email");
+  res.clearCookie("role");
   res.status(200).json({ ok: true });
 });
 
