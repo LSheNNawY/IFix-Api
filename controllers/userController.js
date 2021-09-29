@@ -402,18 +402,20 @@ const logout = (req, res) => {
 const getCurrentUser = async (req, res) => {
   let user = {};
   try {
-    const userData = await User.findById(req.cookies.userId);
-    if (userData) {
-      user = {
-        id: userData._id,
-        username: userData.firstName + " " + userData.lastName,
-        email: userData.email,
-        address: userData.address,
-        role: userData.role,
-        picture: userData.picture,
-      };
+    if (req.cookies.userId) {
+      const userData = await User.findById(req.cookies.userId);
+      if (userData) {
+        user = {
+          id: userData._id,
+          username: userData.firstName + " " + userData.lastName,
+          email: userData.email,
+          address: userData.address,
+          role: userData.role,
+          picture: userData.picture,
+        };
 
-      return res.status(200).json(user);
+        return res.status(200).json(user);
+      }
     }
 
     return res.send(undefined);

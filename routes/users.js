@@ -46,18 +46,19 @@ router.post("/admin/login", async (req, res) => {
 });
 
 router.post("/users/logout", auth, async (req, res) => {
+  console.log('heeeeeeeeere')
 
-  // res.setHeader("set-cookie", [
-  //   `token=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-  //   `email=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-  //   `userId=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-  //   `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-  // ]);
-  res.clearCookie("token");
-  res.clearCookie("userId");
-  res.clearCookie("username");
-  res.clearCookie("role");
-  
+  res.setHeader("set-cookie", [
+    `email=""; httpOnly=true; expires: ${Date.now()}; SameSite=None; Secure`,
+    `token=""; httpOnly=true; expires: ${Date.now()}; SameSite=None; Secure`,
+    `userId=""; httpOnly=true; expires: ${Date.now()}; SameSite=None; Secure`,
+    `role=""; httpOnly=true; expires: ${Date.now()}; SameSite=None; Secure`,
+  ]);
+
+  // res.clearCookie("token");
+  // res.clearCookie("userId");
+  // res.clearCookie("username");
+  // res.clearCookie("role");
   res.status(200).json({ ok: true });
 });
 
