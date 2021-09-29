@@ -371,26 +371,26 @@ const isLoggedIn = (req, res) => {
 };
 
 const logout = (req, res) => {
-  res.setHeader("set-cookie", [
-    `token=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-    `email=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-    `userId=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-    `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
-  ]);
+  // res.setHeader("set-cookie", [
+  //   `token=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  //   `email=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  //   `userId=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  //   `role=""; httpOnly=true; expires: ${new Date(0)}; SameSite=None; Secure`,
+  // ]);
 
-  // res.cookie("token", "", {
-  //   httpOnly: true,
-  //   expires: new Date(0),
-  // });
-  // res.cookie("username", "", {
-  //   expires: new Date(0),
-  // });
-  // res.cookie("userId", "", {
-  //   expires: new Date(0),
-  // });
-  // res.cookie("role", "", {
-  //   expires: new Date(0),
-  // });
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.cookie("username", "", {
+    expires: new Date(0),
+  });
+  res.cookie("userId", "", {
+    expires: new Date(0),
+  });
+  res.cookie("role", "", {
+    expires: new Date(0),
+  });
   res.send();
 };
 
